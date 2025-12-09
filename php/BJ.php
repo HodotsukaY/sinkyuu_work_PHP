@@ -172,6 +172,25 @@ html, body {
 </head>
 <body>
 
+<?php // header include (置くだけで HTML に挿入されます) ?>
+<header class="site-header">
+  <button class="btn btn-back" onclick="location.href='Stert_Window.php'">◀ すべてに戻る</button>
+  <button class="btn btn-hamburger" id="menuToggle" aria-label="menu" onclick="toggleMenu()">
+    <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+  </button>
+</header>
+
+<nav class="side-menu" id="sideMenu" aria-hidden="true">
+  <ul>
+    <li><a class="nav-link" href="Stert_Window.php">Start</a></li>
+    <li><a class="nav-link" href="Login.php">Login</a></li>
+    <li><a class="nav-link" href="GameChange.php">Games</a></li>
+    <li><a class="nav-link" href="ranking.php">Ranking</a></li>
+    <li><a class="nav-link" href="New_User.php">New User</a></li>
+  </ul>
+</nav>
+<div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+
 <!-- デッキの見た目 -->
 <div id="deck-pos"><img src="https://deckofcardsapi.com/static/img/back.png" alt="deck" /></div>
 
