@@ -6,14 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>poker</title>
     <script type="module">
-        const choices = document.querySelector('.choices');
-        let a = '';
-        let b = ['レイズ', 'コール', 'フォールド']
-        for (let i = 0; i < 3; i++) {
-            a += `<button class="action" type="button">${b[i]}</button>`;
-
-        }
-        choices.innerHTML = a;
+        document.addEventListener('DOMContentLoaded', () => {
+            const choices = document.querySelector('.choices');
+            if (!choices) return;
+            const actions = ['レイズ', 'コール', 'フォールド'];
+            choices.innerHTML = actions.map(a => `<button class="action" type="button">${a}</button>`).join('');
+        });
     </script>
     <style>
         ul {

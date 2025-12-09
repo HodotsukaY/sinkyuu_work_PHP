@@ -110,20 +110,20 @@
 
         <div class="cards-row">
 
-            <!-- 新規ユーザー → New_User.html -->
+            <!-- 新規ユーザー → New_User.php -->
             <div class="card-wrapper">
-                <div class="card" onclick="location.href='New_User.html'">
+                <div class="card" onclick="location.href='New_User.php'">
                     <img src="https://deckofcardsapi.com/static/img/back.png" alt="back card">
                 </div>
                 <button class="btn btn-secondary" onclick="location.href='New_User.php'">新規ユーザー</button>
             </div>
 
-            <!-- ゲストユーザー → GameChange.html -->
+            <!-- ゲストログイン（auth.php に POST） -->
             <div class="card-wrapper">
                 <div class="card" onclick="location.href='GameChange.php'">
                     <img src="https://deckofcardsapi.com/static/img/X1.png" alt="joker card">
                 </div>
-                <button class="btn btn-secondary" onclick="location.href='GameChange.html'">ゲストユーザー</button>
+                <button class="btn btn-secondary" onclick="location.href='GameChange.php'">ゲストユーザー</button>
             </div>
 
             <!-- user_id -->
@@ -150,7 +150,7 @@
 
         </div>
 
-        <!-- 通常ログイン → GameChange.html -->
+        <!-- 通常ログイン → GameChange.php -->
         <button class="btn" onclick="location.href='GameChange.php'">ログイン</button>
 
     </div>

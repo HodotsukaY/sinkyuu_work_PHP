@@ -148,7 +148,7 @@
     <!-- 表面（フォーム付カード） -->
     <div class="card-front">
       <div class="card-box">
-        <img src="img\3S.png" alt="3S">
+        <img src="img/3S.png" alt="3S">
 
         <div class="form-area">
           <div>User_name</div>
@@ -182,5 +182,3 @@
 </script>
 </body>
 </html>
-<!DOCTYPE html>
-<html lang="ja">
