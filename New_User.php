@@ -99,7 +99,7 @@
     height: 100%;
     object-fit: cover;
   }
-
+/* test */
   /* フォーム位置調整 */
   .form-area {
     position: absolute;
