@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>カードログイン画面</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", "Noto Sans JP", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(circle at 20% 20%, #277b3c 0, #16602c 55%, #0e3f1d 100%);
+        }
+
+        .table-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 35px;
+        }
+
+        .cards-row {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 40px;
+            white-space: nowrap;
+        }
+
+        .card-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card {
+            position: relative;
+            width: 180px;
+            aspect-ratio: 63 / 88;
+            cursor: pointer;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            border-radius: 14px;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-inner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 18% 12% 14%;
+            pointer-events: none;
+        }
+
+        .field-label {
+            color: #444;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            text-shadow: 0 0 3px rgba(255, 255, 255, 0.7);
+        }
+
+        .field-input {
+            width: 100%;
+            pointer-events: auto;
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 3px solid #555;
+            background: #dcdcdc;
+            font-size: 16px;
+        }
+
+        .btn {
+            min-width: 170px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 3px solid #c77707;
+            background: #f4b034;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #b06304;
+        }
+
+        .btn-secondary {
+            background: #ffe082;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="table-area">
+
+        <div class="cards-row">
+
+            <!-- 新規ユーザー → New_User.html -->
+            <div class="card-wrapper">
+                <div class="card" onclick="location.href='New_User.html'">
+                    <img src="https://deckofcardsapi.com/static/img/back.png" alt="back card">
+                </div>
+                <button class="btn btn-secondary" onclick="location.href='New_User.php'">新規ユーザー</button>
+            </div>
+
+            <!-- ゲストユーザー → GameChange.html -->
+            <div class="card-wrapper">
+                <div class="card" onclick="location.href='GameChange.php'">
+                    <img src="https://deckofcardsapi.com/static/img/X1.png" alt="joker card">
+                </div>
+                <button class="btn btn-secondary" onclick="location.href='GameChange.html'">ゲストユーザー</button>
+            </div>
+
+            <!-- user_id -->
+            <div class="card-wrapper">
+                <div class="card">
+                    <img src="img/AD.png" alt="AD">
+                    <div class="card-inner">
+                        <div class="field-label">user_id</div>
+                        <input class="field-input" type="text" id="userid">
+                    </div>
+                </div>
+            </div>
+
+            <!-- password -->
+            <div class="card-wrapper">
+                <div class="card">
+                    <img src="img/2C.png" alt="2C">
+                    <div class="card-inner">
+                        <div class="field-label">password</div>
+                        <input class="field-input" type="password" id="password">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 通常ログイン → GameChange.html -->
+        <button class="btn" onclick="location.href='GameChange.php'">ログイン</button>
+
+    </div>
+
+</body>
+
+</html>

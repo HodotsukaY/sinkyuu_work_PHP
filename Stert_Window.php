@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Start</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            background: radial-gradient(circle at 20% 20%, #277b3c 0, #16602c 55%, #0e3f1d 100%);
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            animation: fadeIn 1.0s ease-out forwards;
+        }
+
+        .start-img {
+            width: 65vw;
+            max-width: 650px;
+
+            /* --- 強調装飾をOFF --- */
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .start-text {
+            margin-top: 30px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffeb8a;
+            text-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+
+            /* 軽めの点滅 */
+            animation: blink 1.4s infinite;
+            letter-spacing: 4px;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 0.35;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(1.08);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body onclick="goLogin()">
+
+    <div class="container">
+        <img src="img/title_SW (1).png" class="start-img" alt="start image">
+
+        <div class="start-text">タップしてスタート</div>
+    </div>
+
+    <script>
+        function goLogin() {
+            location.href = "Login.php";
+        }
+    </script>
+
+</body>
+
+</html>
