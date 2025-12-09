@@ -361,7 +361,7 @@
             document.getElementById('menuOverlay').classList.remove('show');
             document.getElementById('sideMenu').setAttribute('aria-hidden', 'true');
         }
+
     </script>
 </body>
-
 </html>
