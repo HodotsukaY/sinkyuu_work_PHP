@@ -19,17 +19,19 @@
     align-items: center;
   }
 
-  .back-btn{
+  /* back ボタンは共通クラス .btn-back を使うように統一 */
+  .btn-back{
     position: fixed;
     top: 20px;
     left: 20px;
-    padding: 20px 70px;
-    font-size: 40px;
+    padding: 12px 18px;
+    font-size: 16px;
     background: black;
     color: white;
     border: 2px solid black;
-    border-radius: 100px;
+    border-radius: 12px;
     cursor: pointer;
+    z-index: 10020;
   }
 
   /* ▼▼ 裏→表フリップ全体 ▼▼ */
@@ -261,16 +263,20 @@
   </div>
 </div>
 <script>
-  
+  // セレクタは確実に存在確認してからイベント追加
   const ok = document.querySelector('.ok');
-  ok.addEventListener('click', () => {
-    window.location.href = 'Login.php';
-  });
+  if (ok) {
+    ok.addEventListener('click', () => {
+      window.location.href = 'Login.php';
+    });
+  }
 
-   const back = document.querySelector('.back-btn');
-  back.addEventListener('click', () => {
-    window.location.href = 'Login.php';
-  });
+  const backBtn = document.querySelector('.btn-back');
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      window.location.href = 'Login.php';
+    });
+  }
 
 function toggleMenu(){
   const m = document.getElementById('sideMenu');

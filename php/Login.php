@@ -34,6 +34,14 @@
             align-items: flex-start;
             gap: 40px;
             white-space: nowrap;
+            flex-wrap: nowrap;          /* 基本は横並び固定 */
+            overflow-x: auto;           /* 画面が狭い時は横スクロール */
+            padding-bottom: 6px;
+        }
+
+        /* ログイン行だけ、ボタンを下に回すため wrap 有効 */
+        .cards-row-login {
+            flex-wrap: wrap;
         }
 
         .card-wrapper {
@@ -48,6 +56,7 @@
             width: 180px;
             aspect-ratio: 63 / 88;
             cursor: pointer;
+            flex-shrink: 0;             /* 横スクロールでも潰れないよう固定 */
         }
 
         .card img {
@@ -86,23 +95,67 @@
             font-size: 16px;
         }
 
+        /* 共通ボタン */
         .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             min-width: 170px;
-            padding: 12px 20px;
+            padding: 10px 16px;
             border-radius: 12px;
             border: 3px solid #c77707;
-            background: #f4b034;
-            font-size: 18px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 6px 0 #b06304;
+            background: #f4b034;
+            color: #111;
+            font-size: 16px;
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2);
         }
 
         .btn-secondary {
             background: #ffe082;
+            color: #111;
+            box-shadow: 0 4px 0 #b06304;
         }
 
-        /* 共通ボタン / ヘッダスタイル */
+        /* 戻るボタン小型化 */
+        .btn-back {
+            background: #111;
+            color: #fff;
+            border-color: #111;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.6);
+            min-width: auto;
+            padding: 6px 10px;
+            font-size: 14px;
+        }
+
+        /* ハンバーガー */
+        .btn-hamburger {
+            width: 44px;
+            height: 44px;
+            padding: 6px;
+            border-radius: 10px;
+            background: #222;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.6);
+            gap: 4px;
+        }
+
+        .btn-hamburger .bar {
+            display: block;
+            width: 22px;
+            height: 3px;
+            background: #fff;
+            border-radius: 999px;
+        }
+
+        /* ヘッダ */
         .site-header {
             position: fixed;
             left: 0;
@@ -117,58 +170,9 @@
             pointer-events: none;
         }
 
-        .site-header .btn {
+        .site-header .btn,
+        .site-header .btn-hamburger {
             pointer-events: auto;
-        }
-
-        /* 統一ボタン */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 10px 16px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2);
-            background: #f4b034;
-            color: #111;
-            font-size: 16px;
-        }
-
-        .btn-secondary {
-            background: #ffe082;
-            color: #111;
-            box-shadow: 0 4px 0 #b06304;
-        }
-
-        .btn-back {
-            background: #111;
-            color: #fff;
-            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.6);
-        }
-
-        /* ハンバーガー */
-        .btn-hamburger {
-            width: 48px;
-            height: 48px;
-            padding: 8px;
-            border-radius: 10px;
-            background: #222;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-hamburger .bar {
-            display: block;
-            width: 20px;
-            height: 2px;
-            background: #fff;
-            margin: 3px 0;
         }
 
         /* サイドメニュー */
@@ -225,12 +229,26 @@
             pointer-events: auto;
         }
 
+        /* ログインボタン用：ID/PWカードの中央下に配置 */
+        .login-btn-container {
+            flex-basis: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
         /* 小画面調整 */
         @media (max-width: 480px) {
             .btn {
                 padding: 8px 12px;
                 font-size: 14px;
                 border-radius: 10px;
+                min-width: 130px;
+            }
+
+            .btn-back {
+                padding: 5px 8px;
+                font-size: 13px;
             }
 
             .side-menu {
@@ -248,11 +266,15 @@
 
 <body>
 
-    <?php // header include (置くだけで HTML に挿入されます) ?>
+    <?php // 必要ならここでヘッダ共通化の include を入れる ?>
     <header class="site-header">
-        <button class="btn btn-back" onclick="location.href='Stert_Window.php'">◀ すべてに戻る</button>
-        <button class="btn btn-hamburger" id="menuToggle" aria-label="menu" onclick="toggleMenu()">
-            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        <!-- テキストを「戻る」に変更 -->
+        <button class="btn btn-back" onclick="location.href='Stert_Window.php'">◀ 戻る</button>
+
+        <button class="btn-hamburger" id="menuToggle" aria-label="menu" onclick="toggleMenu()">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
         </button>
     </header>
 
@@ -269,6 +291,7 @@
 
     <div class="table-area">
 
+        <!-- 上段：新規・ゲスト -->
         <div class="cards-row">
 
             <!-- 新規ユーザー → New_User.php -->
@@ -276,43 +299,51 @@
                 <div class="card" onclick="location.href='New_User.php'">
                     <img src="https://deckofcardsapi.com/static/img/back.png" alt="back card">
                 </div>
-                <button class="btn btn-secondary" onclick="location.href='New_User.php'">新規ユーザー</button>
+                <button class="btn btn-secondary" type="button" onclick="location.href='New_User.php'">新規ユーザー</button>
             </div>
 
-            <!-- ゲストログイン（auth.php に POST） -->
+            <!-- ゲストログイン → GameChange.php -->
             <div class="card-wrapper">
                 <div class="card" onclick="location.href='GameChange.php'">
                     <img src="https://deckofcardsapi.com/static/img/X1.png" alt="joker card">
                 </div>
-                <button class="btn btn-secondary" onclick="location.href='GameChange.php'">ゲストユーザー</button>
+                <button class="btn btn-secondary" type="button" onclick="location.href='GameChange.php'">ゲストユーザー</button>
             </div>
-
-            <!-- user_id -->
-            <div class="card-wrapper">
-                <div class="card">
-                    <img src="img/AD.png" alt="AD">
-                    <div class="card-inner">
-                        <div class="field-label">user_id</div>
-                        <input class="field-input" type="text" id="userid">
-                    </div>
-                </div>
-            </div>
-
-            <!-- password -->
-            <div class="card-wrapper">
-                <div class="card">
-                    <img src="img/2C.png" alt="2C">
-                    <div class="card-inner">
-                        <div class="field-label">password</div>
-                        <input class="field-input" type="password" id="password">
-                    </div>
-                </div>
-            </div>
-
         </div>
 
-        <!-- 通常ログイン → GameChange.php -->
-        <button class="btn" onclick="location.href='GameChange.php'">ログイン</button>
+        <!-- 下段：通常ログイン（user_id / password を auth.php へ POST） -->
+        <form id="loginForm" action="auth.php" method="post">
+            <div class="cards-row cards-row-login">
+
+                <!-- user_id -->
+                <div class="card-wrapper">
+                    <div class="card">
+                        <img src="img/AD.png" alt="AD">
+                        <div class="card-inner">
+                            <div class="field-label">user_id</div>
+                            <input class="field-input" type="text" id="userid" name="user_id" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- password -->
+                <div class="card-wrapper">
+                    <div class="card">
+                        <img src="img/2C.png" alt="2C">
+                        <div class="card-inner">
+                            <div class="field-label">password</div>
+                            <input class="field-input" type="password" id="password" name="password" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ID / PW カードの中央下にログインボタン -->
+                <div class="login-btn-container">
+                    <button class="btn" type="submit">ログイン</button>
+                </div>
+
+            </div>
+        </form>
 
     </div>
 

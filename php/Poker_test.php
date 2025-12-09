@@ -66,7 +66,7 @@
             text-align: center;
             background:
                 radial-gradient(circle at 20% 20%, #277b3c 0, #16602c 55%, #0e3f1d 100%);
-            width: 97%;
+            width: 100%;
         }
 
         .game_field {
@@ -216,7 +216,9 @@
             }
         }
     </style>
+</head>
 
+<body>
     <header class="site-header">
         <button class="btn btn-back" onclick="location.href='Stert_Window.php'">◀ すべてに戻る</button>
         <button class="btn btn-hamburger" id="menuToggle" aria-label="menu" onclick="toggleMenu()">
@@ -234,9 +236,7 @@
         </ul>
     </nav>
     <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
-</head>
 
-<body>
     <div class="game_field">
         <ul class="table_center">
             <li><img src="https://deckofcardsapi.com/static/img/AD.png" alt=""></li>
