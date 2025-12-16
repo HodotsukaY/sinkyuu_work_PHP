@@ -3,102 +3,16 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ブラックジャック（配りアニメ + NEW GAME）</title>
+<title>ブラックジャック</title>
 <style>
-
-
-/* ===== 共通レイアウト（全ページ統一） ===== */
-:root{
-  --bg1:#277b3c;
-  --bg2:#16602c;
-  --bg3:#0e3f1d;
-  --panel: rgba(255,255,255,0.10);
-  --panel2: rgba(0,0,0,0.25);
-  --text:#ffffff;
-  --muted: rgba(255,255,255,0.75);
-  --accent:#f4b034;
-  --radius:16px;
-}
-*{ box-sizing:border-box; }
-html,body{ height:100%; }
-body{
-  margin:0;
-  font-family: "Segoe UI","Noto Sans JP",sans-serif;
-  color:var(--text);
-  background: radial-gradient(circle at 20% 20%, var(--bg1) 0, var(--bg2) 55%, var(--bg3) 100%);
-  padding: 92px 16px 24px; /* 固定ヘッダ分の余白 */
-}
-.page{
-  max-width: 980px;
-  margin: 0 auto;
-}
-.panel{
-  background: var(--panel);
-  border: 1px solid rgba(255,255,255,0.18);
-  border-radius: var(--radius);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.35);
-  padding: 18px;
-}
-h1,h2,h3{ margin: 0 0 12px; }
-.small{ color: var(--muted); font-size: 0.95rem; }
-
-/* 共通ヘッダ */
-.site-header{
-  position: fixed;
-  left: 0; right: 0; top: 12px;
-  z-index: 999;
-  padding: 0 16px;
-}
-.site-header .header-inner{
-  max-width: 980px;
-  margin: 0 auto;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: rgba(0,0,0,0.35);
-  border: 1px solid rgba(255,255,255,0.14);
-  backdrop-filter: blur(6px);
-}
-.header-title{
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-align:center;
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: none;
-  font-weight: 800;
-  cursor: pointer;
-  text-decoration:none;
-  user-select:none;
-  -webkit-tap-highlight-color: transparent;
-}
-.btn:active{ transform: translateY(1px); }
-.btn-primary{ background: var(--accent); color:#111; box-shadow: 0 6px 0 rgba(0,0,0,0.25); }
-.btn-secondary{ background: rgba(255,255,255,0.16); color: #fff; box-shadow: 0 6px 0 rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.18); }
-.btn-back{ background:#111; color:#fff; box-shadow: 0 6px 0 rgba(0,0,0,0.45); }
-
-/* http://localhost/BJ.php */
 /* ---------- 背景 ---------- */
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: sans-serif;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   color: #fff;
-  background: radial-gradient(circle, #1d6b33 0%, #0f4720 70%, #0a2f14 100%);
+  background: radial-gradient(circle, #164d2a 0%, #0f4720 50%, #083216 100%);
   background-size: cover;
   background-attachment: fixed;
 }
@@ -109,62 +23,74 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 18px 12px;
+  padding: 26px 12px;
   box-sizing: border-box;
   position: relative;
 }
 
-.opponent-area, .player-area { text-align: center; width:100%; max-width:900px; }
+/* 相手／自分領域幅を広げつつ中央に */
+.opponent-area, .player-area {
+  text-align: center;
+  width:100%;
+  max-width:1060px; /* 大きく見せるため幅拡張 */
+}
+
+/* カード領域の縦間隔を増やす */
 .opponent-cards, .player-cards {
   display: flex;
-  gap: 20px;
+  gap: 28px;
   justify-content: center;
-  margin-top: 8px;
-  min-height: 170px;
+  margin-top: 14px;
+  min-height: 220px; /* 高さを増やしてカードを大きくできる余裕を確保 */
 }
 
 /* スロット（カードが入る領域） */
-.card-slot { width:110px; height:160px; }
+.card-slot { width:160px; height:230px; }
 
-/* 実際のカード画像（固定） */
+/* 実際のカード画像（拡大） */
 .slot-img {
-  width:110px;
-  height:160px;
-  border-radius:8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.6);
+  width:160px;
+  height:230px;
+  border-radius:10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.6);
   display:block;
   backface-visibility: hidden;
 }
 
-/* 浮遊カード（アニメ用） */
+/* 浮遊カード（アニメ用・拡大） */
 .floating-card {
   position: fixed;
-  width:110px;
-  height:160px;
-  border-radius:8px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  width:160px;
+  height:230px;
+  border-radius:10px;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.6);
   transform-origin: center;
   will-change: transform, left, top;
   z-index: 9998;
 }
 
-/* ---------- ボタン ---------- */
+/* ---------- ボタン（拡大） ---------- */
 .action-buttons {
   display:flex;
-  gap:14px;
+  gap:20px;
   justify-content:center;
-  margin-top: 20px;
+  margin-top: 26px;
 }
 .btn {
   background: #f7c843;
   color: #000;
-  padding: 12px 18px;
-  font-size: 16px;
-  border-radius: 10px;
+  padding: 14px 26px;
+  font-size: 18px;
+  border-radius: 12px;
   border: none;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 800;
+  box-shadow: 0 6px 0 rgba(0,0,0,0.15), inset 0 -4px 0 rgba(0,0,0,0.06);
 }
+
+.action-buttons .btn:hover{ background:#f7c899}
+
+/* 無効状態 */
 .btn:disabled {
   background: #777 !important;
   color: #ccc !important;
@@ -172,47 +98,86 @@ html, body {
   opacity: 0.6;
 }
 
-/* ---------- チップバー ---------- */
+#bet-confirm:disabled {
+  background: #777;
+  color: #ccc;
+  cursor: default;
+}
+
+
+/* ---------- チップバー（拡大） ---------- */
 .chip-bar {
   position: fixed;
-  left: 10px;
-  bottom: 10px;
+  left: 18px;
+  bottom: 18px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   z-index: 9999;
 }
-.chip-row { display:flex; gap:10px; }
-.chip-row.centered { margin-left:40px; }
-.chip-bar img { width:70px; cursor:pointer; transition: transform .15s; }
-.chip-bar img:hover { transform: scale(1.1); }
+.chip-row { display:flex; gap:14px; }
+.chip-row.centered { margin-left:42px; }
 
-/* ---------- 中央メッセージゾーン ---------- */
+/* チップ画像を大きく */
+.chip-bar img { width:100px; cursor:pointer; transition: transform .15s; }
+.chip-bar img:hover { transform: scale(1.08); }
+
+/* BET ボックス */
+#bet-container {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:6px;
+}
+#bet-box {
+  background: rgba(0,0,0,0.85);
+  padding: 10px 18px;
+  border-radius: 10px;
+  min-width: 220px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 900;
+  color: #39ff14;
+  box-shadow: inset 0 -6px 0 rgba(0,0,0,0.2);
+}
+#bet-controls button {
+  background:#f7c843;
+  color:#000;
+  border:none;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:800;
+}
+#bet-controls button:hover{ background:#f7c899 }
+
+/* ---------- メッセージゾーン（拡大） ---------- */
 #center-message {
-  height: 110px;
+  height: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
-  font-weight: 800;
-  color: #fff;
-  text-shadow: 0 0 10px rgba(0,0,0,0.7);
+  font-size: 56px; /* 大きく */
+  font-weight: 900;
+  color: #00ffff; /* デフォは YOUR TURN の色に寄せる */
+  text-shadow: 0 6px 18px rgba(0,0,0,0.6);
   opacity: 0;
   transform: scale(0.98);
-  transition: opacity .45s ease, transform .35s ease;
+  transition: opacity .28s ease, transform .22s ease;
   pointer-events: none;
-  margin: 12px 0;
+  margin: 18px 0;
 }
 #center-message.show {
   opacity: 1;
   transform: scale(1);
+  pointer-events: auto;
 }
 
-/* 思考中のドット（横並び） */
+/* 思考中の ... を横に点滅（ドットは白でOK） */
 #thinking-dots {
   display: flex;
-  gap: 6px;
-  margin-left: 8px;
+  gap: 8px;
+  margin-left: 12px;
   align-items: center;
 }
 @keyframes blinkDots {
@@ -222,38 +187,64 @@ html, body {
   100% { opacity: 0; transform: translateY(0); }
 }
 #thinking-dots span {
-  width:8px;
-  height:8px;
+  width:10px;
+  height:10px;
   background: #fff;
   border-radius:50%;
   display:inline-block;
   animation: blinkDots 1.2s infinite;
 }
-#thinking-dots span:nth-child(2){ animation-delay: .15s; }
-#thinking-dots span:nth-child(3){ animation-delay: .30s; }
+#thinking-dots span:nth-child(2){ animation-delay: .12s; }
+#thinking-dots span:nth-child(3){ animation-delay: .24s; }
 
-/* デッキ表示位置 */
-#deck-pos {
+/* ---------- 各種微調整（見た目を右画像寄せ） ---------- */
+#opponent-name{
+  font-weight:700;
+  margin-right: 75px;
+  font-size:25px;
+  margin-top:6px;
+  color:#e8f3e8;
+}
+
+#player-total, #opponent-total {
+  font-weight:700;
+  font-size:20px;
+  margin-top:5px;
+  color:#e8f3e8;
+}
+/* blackjack テキスト */
+#blackjack-text { font-size: 30px; }
+
+/* ---------- CREDIT 表示ボックス ---------- */
+#credit-box {
   position: fixed;
-  right: 110px;
-  top: 30px;
-  width: 110px;
-  height: 160px;
-  z-index: 9997;
-  pointer-events: none;
-  opacity: 0.95;
-}
-#deck-pos img { width:110px; height:160px; border-radius:8px; box-shadow: 0 0 12px rgba(0,0,0,0.4); }
+  right: 18px;
+  bottom: 18px;
 
-/* レスポンシブ */
-@media (max-width:600px) {
-  #center-message { font-size: 26px; height: 76px; }
-  .chip-bar img { width: 56px; }
-  .card-slot, .slot-img, .floating-card { width: 86px; height:126px; }
-  #deck-pos { right:60px; top:14px; width:86px; height:126px; }
+  width: 300px;
+  height: 72px;
+
+  background: #333;
+  color: #39ff14;
+
+  border-radius: 14px;
+  padding: 16px 20px;
+  box-sizing: border-box;
+
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 1px;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-/* ===== 画像のUIに合わせた戻る＋ハンバーガー（統一） ===== */
-body{ padding-top: 72px; } /* 92pxでもOK。BJは72で十分 */
+
+/* ===== 上部UI（戻る＋ハンバーガー） ===== */
+body{ padding-top: 72px; } /* 上UIぶん余白 */
 
 .top-ui{
   position: fixed;
@@ -337,35 +328,11 @@ body{ padding-top: 72px; } /* 92pxでもOK。BJは72で十分 */
 .menu-overlay.open{ opacity:1; pointer-events:auto; }
 .menu-panel.open{ opacity:1; transform:translateY(0); pointer-events:auto; }
 
-/* ===== ゲームボタンを .btn から分離（競合防止） ===== */
-.game-btn{
-  background:#f7c843;
-  color:#000;
-  padding:12px 18px;
-  font-size:16px;
-  border-radius:10px;
-  border:none;
-  cursor:pointer;
-  font-weight:bold;
-}
-.game-btn:disabled{
-  background:#777 !important;
-  color:#ccc !important;
-  cursor:default;
-  opacity:.6;
-}
-
-/* デッキ位置を少し下げてヘッダと被らないように */
-#deck-pos{ top: 86px; right: 14px; } /* ←ここ重要 */
-@media (max-width:600px){
-  #deck-pos{ top: 74px; right: 14px; }
-}
-
 </style>
 </head>
 <body>
 
-<?php // header include (置くだけで HTML に挿入されます) ?>
+<!-- 上部UI（戻る＋メニュー） -->
 <header class="top-ui">
   <button class="ui-back" type="button" onclick="goBackBJ()">
     <span>◀</span><span>戻る</span>
@@ -378,8 +345,8 @@ body{ padding-top: 72px; } /* 92pxでもOK。BJは72で十分 */
   </button>
 </header>
 
-<div class="menu-overlay" id="menuOverlay2" onclick="closeMenu()"></div>
-<nav class="menu-panel" id="menuPanel2" aria-hidden="true">
+<div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+<nav class="menu-panel" id="menuPanel" aria-hidden="true">
   <a href="Stert_Window.php">Start</a>
   <a href="Login.php">Login</a>
   <a href="GameChange.php">Games</a>
@@ -387,8 +354,6 @@ body{ padding-top: 72px; } /* 92pxでもOK。BJは72で十分 */
   <a href="New_User.php">New User</a>
 </nav>
 
-<!-- デッキの見た目 -->
-<div id="deck-pos"><img src="https://deckofcardsapi.com/static/img/back.png" alt="deck" /></div>
 
 <div class="table-area">
 
@@ -404,23 +369,21 @@ body{ padding-top: 72px; } /* 92pxでもOK。BJは72で十分 */
 
   <!-- プレイヤー -->
   <div class="player-area">
-    <div style="height:10px;"></div>
+    <div style="height:12px;"></div>
     <div id="player-total">合計: ?</div>
     <div class="player-cards" id="player-cards"></div>
 
     <div class="action-buttons">
-      <button class="game-btn" id="hit-btn">HIT</button>
-      <button class="game-btn" id="stand-btn">STAND</button>
-      <button class="game-btn" id="newgame-btn" style="display:none;">NEW GAME</button>
-
-
+      <button class="btn" id="hit-btn">HIT</button>
+      <button class="btn" id="stand-btn">STAND</button>
+      <button class="btn" id="newgame-btn" style="display:none;">NEW ROUND</button>
     </div>
+    <div id="blackjack-text" style="text-align:center;font-size:28px;font-weight:bold;margin-top:10px;color:#ffd700;"></div>
   </div>
-
 </div>
 
-<!-- チップバー（そのまま） -->
-<div class="chip-bar">
+<!-- チップバー -->
+<div class="chip-bar" id="chip-bar">
   <div class="chip-row">
     <img src="img/chip1.png" data-value="1" />
     <img src="img/chip5.png" data-value="5" />
@@ -432,12 +395,29 @@ body{ padding-top: 72px; } /* 92pxでもOK。BJは72で十分 */
     <img src="img/chip100.png" data-value="100" />
     <img src="img/chip1000.png" data-value="1000" />
   </div>
+
+  <!-- BET ボックス：チップの下に表示 -->
+  <div id="bet-container">
+    <div id="bet-box"><span id="bet-amount">0</span> pt</div>
+    <div id="bet-controls">
+      <button id="bet-max">MAX</button>
+      <button id="bet-min">MIN</button>
+      <button id="bet-confirm" class="btn">BET</button>
+
+    </div>
+  </div>
 </div>
 
+<!-- 所持クレジット表示 -->
+<div id="credit-box">
+  <span>CREDIT</span>
+  <span>10000</span>
+  <span>pt</span>
+</div>
+
+
 <script>
-/* -------------------------
-  変数 / 設定
-   ------------------------- */
+/* 変数 / 設定 */
 const CARD_BACK = "https://deckofcardsapi.com/static/img/back.png";
 const centerBox = document.getElementById("center-message");
 
@@ -446,11 +426,32 @@ let playerCards = [];
 let opponentCards = [];
 let showOpponentSecondCard = false;
 
-const dealingDelay = 480; // ms between deals
+const dealingDelay = 480;
 const flipDuration = 380;
 const flyDuration = 420;
 
-/* ---------- ユーティリティ ---------- */
+/* BET 変数 */
+let betAmount = 0;
+const betAmountEl = () => document.getElementById('bet-amount');
+function updateBetBox(){ betAmountEl().textContent = betAmount.toLocaleString(); }
+
+/* CHIP クリックで加算 */
+document.addEventListener('click', (e)=>{
+  const t = e.target;
+  if(t && t.matches && t.matches('.chip-bar img')){
+    const v = Number(t.dataset.value || 0);
+    betAmount += v;
+    updateBetBox();
+  }
+});
+
+/* MAX / MIN */
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('bet-max').addEventListener('click', ()=>{ betAmount = 10000; updateBetBox(); });
+  document.getElementById('bet-min').addEventListener('click', ()=>{ betAmount = 0; updateBetBox(); });
+});
+
+/* UTILITY */
 function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
 
 function getSlotRect(container) {
@@ -463,6 +464,7 @@ function getSlotRect(container) {
   return rect;
 }
 
+/* 浮遊カード */
 function createFloatingCard(src) {
   const f = document.createElement("img");
   f.src = src;
@@ -474,10 +476,18 @@ function createFloatingCard(src) {
   return f;
 }
 
+/* カードの飛び出す位置（右上） */
+function flyStartRect() {
+  return {
+    left: window.innerWidth - 180,
+    top: 36
+  };
+}
+
 function flyTo(floating, targetRect, revealFlip=false, finalSrc=null) {
   return new Promise(resolve => {
-    const deckEl = document.getElementById("deck-pos");
-    const dRect = deckEl.getBoundingClientRect();
+
+    const dRect = flyStartRect();
 
     floating.style.left = `${dRect.left}px`;
     floating.style.top = `${dRect.top}px`;
@@ -498,15 +508,13 @@ function flyTo(floating, targetRect, revealFlip=false, finalSrc=null) {
         if (finalSrc) floating.src = finalSrc;
         floating.style.transform = `translate3d(${dx}px, ${dy}px, 0px) rotateY(0deg)`;
         await wait(flipDuration/2 + 30);
-      } else {
-        await wait(90);
       }
       resolve();
     }, flyDuration + 10);
   });
 }
 
-/* ---------- スロットにカードを追加 ---------- */
+/* スロットにカード追加 */
 function appendCardToSlot(container, cardSrc, isBack=false, dataFrontSrc=null) {
   const img = document.createElement("img");
   img.className = "slot-img";
@@ -516,7 +524,21 @@ function appendCardToSlot(container, cardSrc, isBack=false, dataFrontSrc=null) {
   return img;
 }
 
-/* ---------- Deck API ---------- */
+/* 対戦相手名（randomuser API）*/
+async function setOpponentName() {
+  try {
+    const res = await fetch("https://randomuser.me/api/?inc=name");
+    const data = await res.json();
+    const name = data.results[0].name;
+
+    document.getElementById("opponent-name").textContent =
+    `対戦相手：${name.first} ${name.last}`;
+  } catch (e) {
+    document.getElementById("opponent-name").textContent = "Dealer";
+  }
+}
+
+/* Deck API */
 async function newDeck() {
   const res = await fetch("https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=6");
   const data = await res.json();
@@ -527,32 +549,34 @@ async function drawCard(count=1) {
   return await res.json();
 }
 
-/* ---------- メッセージ制御 ---------- */
-function showMessage(text) {
-  centerBox.classList.remove("show");
-  setTimeout(() => { centerBox.innerHTML = text; centerBox.classList.add("show"); }, 30);
-}
+/* メッセージ ) */
 function showThinking() {
-  centerBox.classList.remove("show");
-  setTimeout(() => {
-    centerBox.innerHTML = `思考中<span id="thinking-dots"><span></span><span></span><span></span></span>`;
-    centerBox.classList.add("show");
-  }, 30);
-}
-function clearMessage() {
-  centerBox.classList.remove("show");
-  setTimeout(()=> centerBox.textContent = "", 300);
+  const msgBox = document.getElementById("center-message");
+  msgBox.style.color = "#ffffff";  // 思考中は白
+  msgBox.innerHTML = `思考中<span id="thinking-dots"><span></span><span></span><span></span></span>`;
+  msgBox.classList.add("show");
 }
 
-/* ---------- 更新 ---------- */
+function showYourTurn() {
+  const msgBox = document.getElementById("center-message");
+  msgBox.style.color = "#00ffff";   // YOUR TURN の色
+  msgBox.innerHTML = "－ YOUR TURN －";
+  msgBox.classList.add("show");
+}
+
+function hideCenter() {
+  const msgBox = document.getElementById("center-message");
+  msgBox.classList.remove("show");
+}
+
+/* 計算 */
 function updateTotals() {
-  const pEl = document.getElementById("player-total");
-  const oEl = document.getElementById("opponent-total");
-  pEl.textContent = `合計: ${calcTotal(playerCards)}`;
-  oEl.textContent = `合計: ${showOpponentSecondCard ? calcTotal(opponentCards) : "?"}`;
+  document.getElementById("player-total").textContent =
+    `合計: ${calcTotal(playerCards)}`;
+  document.getElementById("opponent-total").textContent =
+    `合計: ${showOpponentSecondCard ? calcTotal(opponentCards) : "?"}`;
 }
 
-/* ---------- 合計計算 ---------- */
 function calcTotal(cards) {
   let total = 0;
   let aces = 0;
@@ -567,185 +591,234 @@ function calcTotal(cards) {
   return total;
 }
 
-/* ---------- 配り（アニメ） ---------- */
+/* 初期 4 枚 */
 async function dealInitialFour() {
+
   document.getElementById("player-cards").innerHTML = "";
   document.getElementById("opponent-cards").innerHTML = "";
-  playerCards = []; opponentCards = [];
+  playerCards = [];
+  opponentCards = [];
   showOpponentSecondCard = false;
-  // NOTE: intentionally NOT clearing centerBox here — keep previous result until NEW GAME pressed
   document.getElementById("newgame-btn").style.display = "none";
 
-  const seqTargets = [
-    { target: "player-cards", reveal: true },
-    { target: "opponent-cards", reveal: false },
-    { target: "player-cards", reveal: true },
-    { target: "opponent-cards", reveal: false }
+  hideCenter();
+
+  const seq = [
+    { target:"player-cards", reveal:true },
+    { target:"opponent-cards", reveal:false },
+    { target:"player-cards", reveal:true },
+    { target:"opponent-cards", reveal:false }
   ];
 
   for (let i=0;i<4;i++){
-    const resp = await drawCard(1);
-    const card = resp.cards[0];
-    const container = document.getElementById(seqTargets[i].target);
-    const targetRect = getSlotRect(container);
+    const card = (await drawCard()).cards[0];
+    const container = document.getElementById(seq[i].target);
+    const rect = getSlotRect(container);
     const floating = createFloatingCard(CARD_BACK);
-    await flyTo(floating, targetRect, seqTargets[i].reveal, card.image);
+
+    await flyTo(floating, rect, seq[i].reveal, card.image);
     document.body.removeChild(floating);
 
-    if (seqTargets[i].target === "player-cards") {
-      appendCardToSlot(container, card.image, false, null);
+    if (seq[i].target==="player-cards"){
+      appendCardToSlot(container, card.image);
       playerCards.push(card);
     } else {
       const isSecond = (i===3);
-      if (isSecond) {
+      if (isSecond){
         appendCardToSlot(container, null, true, card.image);
       } else {
-        appendCardToSlot(container, card.image, false, null);
+        appendCardToSlot(container, card.image);
       }
       opponentCards.push(card);
     }
-
     updateTotals();
+
+    // ブラックジャック表示
+    if (calcTotal(playerCards) === 21) {
+      document.getElementById('blackjack-text').textContent = 'BLACKJACK';
+    }
+
     await wait(dealingDelay);
   }
 
-  // enable buttons after deal
+  // 操作可能に
   document.getElementById("hit-btn").disabled = false;
   document.getElementById("stand-btn").disabled = false;
+
+  const betConfirmBtn = document.getElementById("bet-confirm");
+
+  betConfirmBtn.addEventListener("click", () => {
+    // いまはロックするだけ
+    betConfirmBtn.disabled = true;
+  });
+
+
+  /* ★ プレイヤーのターン開始 */
+  showYourTurn();
 }
 
-/* ---------- player HIT ---------- */
+/* player HIT */
 async function playerHit() {
   document.getElementById("hit-btn").disabled = true;
-  const resp = await drawCard(1);
-  const card = resp.cards[0];
+
+  const card = (await drawCard()).cards[0];
   const container = document.getElementById("player-cards");
-  const targetRect = getSlotRect(container);
+  const rect = getSlotRect(container);
   const floating = createFloatingCard(CARD_BACK);
-  await flyTo(floating, targetRect, true, card.image);
+
+  await flyTo(floating, rect, true, card.image);
   document.body.removeChild(floating);
-  appendCardToSlot(container, card.image, false, null);
+
+  appendCardToSlot(container, card.image);
   playerCards.push(card);
   updateTotals();
-  document.getElementById("hit-btn").disabled = false;
+
+  // ★ バーストしていないなら YOUR TURN を再表示
+  if (calcTotal(playerCards) <= 21) {
+    document.getElementById("hit-btn").disabled = false;
+    showYourTurn();
+  }
 }
 
-/* ---------- reveal dealer second ---------- */
+/* reveal dealer second */
 async function revealDealerSecond() {
   showOpponentSecondCard = true;
-  const opp = document.getElementById("opponent-cards");
-  const imgs = opp.querySelectorAll(".slot-img");
+  const imgs = document.querySelectorAll("#opponent-cards .slot-img");
   if (imgs.length >= 2) {
-    const secondImg = imgs[1];
-    const front = secondImg.dataset.front;
+    const sec = imgs[1];
+    const front = sec.dataset.front;
     if (front) {
-      secondImg.style.transition = `transform ${flipDuration/1000}s ease-in`;
-      secondImg.style.transform = `rotateY(90deg)`;
+      sec.style.transition = `transform ${flipDuration/1000}s ease-in`;
+      sec.style.transform = "rotateY(90deg)";
       await wait(flipDuration/2);
-      secondImg.src = front;
-      secondImg.style.transform = `rotateY(0deg)`;
-      await wait(flipDuration/2 + 30);
-      secondImg.style.transition = "";
-      delete secondImg.dataset.front;
+      sec.src = front;
+      sec.style.transform = "rotateY(0deg)";
+      await wait(flipDuration/2 + 20);
+      sec.style.transition = "";
+      delete sec.dataset.front;
     }
   }
   updateTotals();
 }
 
-/* ---------- dealer turn ---------- */
+/* dealerTurn */
 async function dealerTurn() {
   document.getElementById("hit-btn").disabled = true;
   document.getElementById("stand-btn").disabled = true;
 
   showThinking();
-  await wait(600 + Math.random()*900);
-  await revealDealerSecond();
+  await wait(1000); // 思考時間 1 秒（固定）
 
-  await wait(700 + Math.random()*900);
+  await revealDealerSecond();
+  await wait(1000);
 
   while (calcTotal(opponentCards) < 17) {
     showThinking();
-    await wait(900 + Math.random()*900);
-    const resp = await drawCard(1);
-    const card = resp.cards[0];
+    await wait(1000);
+
+    const card = (await drawCard()).cards[0];
     opponentCards.push(card);
 
     const container = document.getElementById("opponent-cards");
-    const targetRect = getSlotRect(container);
+    const rect = getSlotRect(container);
     const floating = createFloatingCard(CARD_BACK);
-    await flyTo(floating, targetRect, true, card.image);
-    document.body.removeChild(floating);
-    appendCardToSlot(container, card.image, false, null);
 
+    await flyTo(floating, rect, true, card.image);
+    document.body.removeChild(floating);
+
+    appendCardToSlot(container, card.image);
     updateTotals();
   }
 
-  // do not clear the center message here — we want final result to remain
-  await wait(200);
   showResult();
 }
 
-/* ---------- 結果表示 ---------- */
+/* showResult */
 function showResult() {
   const p = calcTotal(playerCards);
   const o = calcTotal(opponentCards);
-  let msg = "";
-  if (p > 21) msg = "あなたの負け";
-  else if (o > 21) msg = "あなたの勝ち！";
-  else if (p > o) msg = "あなたの勝ち！";
-  else if (p < o) msg = "あなたの負け";
-  else msg = "引き分け";
 
-  // 常時表示 until NEW GAME pressed
+  let msg = "";
+  if (p > 21) msg = "YOU  LOSE";
+  else if (o > 21) msg = "YOU  WIN!";
+  else if (p > o) msg = "YOU  WIN!";
+  else if (p < o) msg = "YOU  LOSE";
+  else msg = "DRAW";
+
+  centerBox.style.color = "#ffffff";   // 勝敗は白固定
   centerBox.innerHTML = msg;
   centerBox.classList.add("show");
 
-  // disable action buttons
   document.getElementById("hit-btn").disabled = true;
   document.getElementById("stand-btn").disabled = true;
 
-  // show NEW GAME
   document.getElementById("newgame-btn").style.display = "inline-block";
 }
 
-/* ---------- NEW GAME ---------- */
+/* NEW GAME */
 document.getElementById("newgame-btn").addEventListener("click", async () => {
-  // hide newgame
   document.getElementById("newgame-btn").style.display = "none";
-
-  // clear slots and message (only here we clear the persistent message)
   document.getElementById("player-cards").innerHTML = "";
   document.getElementById("opponent-cards").innerHTML = "";
   centerBox.classList.remove("show");
   centerBox.textContent = "";
 
-  // reset arrays
   playerCards = [];
   opponentCards = [];
   showOpponentSecondCard = false;
 
-  // start fresh
   await newDeck();
   await dealInitialFour();
 });
+
+/* ボタン */
+document.getElementById("hit-btn").addEventListener("click", async () => {
+  if (calcTotal(playerCards) <= 21) {
+    await playerHit();
+    if (calcTotal(playerCards) > 21) {
+      await revealDealerSecond();
+      showResult();
+    }
+  }
+});
+document.getElementById("stand-btn").addEventListener("click", async () => {
+  await dealerTurn();
+});
+
+/* 初期 */
+(async function init(){
+  document.getElementById("hit-btn").disabled = true;
+  document.getElementById("stand-btn").disabled = true;
+
+  await setOpponentName();   // 対戦相手名
+  await newDeck();
+  await dealInitialFour();
+})(); // ★ここが抜けると全部死ぬ
+
+// 戻る（履歴が無いときの保険つき）
 function goBackBJ(){
   if(history.length > 1) history.back();
   else location.href = "GameChange.php";
 }
 
+// メニュー開閉
 function toggleMenu(){
-  const p = document.getElementById("menuPanel2");
-  const o = document.getElementById("menuOverlay2");
+  const p = document.getElementById("menuPanel");
+  const o = document.getElementById("menuOverlay");
   const open = !p.classList.contains("open");
   p.classList.toggle("open", open);
   o.classList.toggle("open", open);
   p.setAttribute("aria-hidden", String(!open));
 }
+
 function closeMenu(){
-  document.getElementById("menuPanel2").classList.remove("open");
-  document.getElementById("menuOverlay2").classList.remove("open");
-  document.getElementById("menuPanel2").setAttribute("aria-hidden","true");
+  const p = document.getElementById("menuPanel");
+  const o = document.getElementById("menuOverlay");
+  p.classList.remove("open");
+  o.classList.remove("open");
+  p.setAttribute("aria-hidden","true");
 }
+
 document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeMenu(); });
 
 </script>

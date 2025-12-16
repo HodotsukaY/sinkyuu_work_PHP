@@ -122,64 +122,64 @@
 
     /* ===== 検索バー ===== */
     .search-bar{
-      display:flex;
-      align-items:stretch;
-      margin: 0 auto 25px;
-      width:100%;
-      max-width:650px;
-      box-shadow:0 4px 10px rgba(0,0,0,0.35);
+    display:flex;
+    align-items:stretch;
+    margin: 0 auto 25px;
+    width:100%;
+    max-width:650px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.35);
     }
     .search-tab-label{
-      background:#f5f5f5;
-      color:#222;
-      padding:10px 20px;
-      font-weight:700;
-      border-top-left-radius:4px;
+    background:#f5f5f5;
+    color:#222;
+    padding:10px 20px;
+    font-weight:700;
+    border-top-left-radius:4px;
     }
     .search-input-wrap{
-      flex:1;
-      background:#6b7a4b;
-      display:flex;
-      align-items:center;
-      padding:0 10px;
+    flex:1;
+    background:#6b7a4b;
+    display:flex;
+    align-items:center;
+    padding:0 10px;
     }
     .search-input-wrap input{
-      width:100%;
-      padding:6px 8px;
-      border-radius:4px;
-      border:none;
-      outline:none;
-      font-size:14px;
+    width:100%;
+    padding:6px 8px;
+    border-radius:4px;
+    border:none;
+    outline:none;
+    font-size:14px;
     }
     .search-button{
-      background:#d0d6db;
-      color:#222;
-      padding:10px 25px;
-      font-weight:700;
-      border:none;
-      cursor:pointer;
-      border-top-right-radius:4px;
-      border-bottom-right-radius:4px;
+    background:#d0d6db;
+    color:#222;
+    padding:10px 25px;
+    font-weight:700;
+    border:none;
+    cursor:pointer;
+    border-top-right-radius:4px;
+    border-bottom-right-radius:4px;
     }
 
     /* ===== ランキング表 ===== */
     .ranking-box{
-      margin: 0 auto;
-      max-width:650px;
-      border:1px solid rgba(255,255,255,0.3);
-      background: rgba(0,0,0,0.15);
-      padding: 12px 18px 18px;
+    margin: 0 auto;
+    max-width:650px;
+    border:1px solid rgba(255,255,255,0.3);
+    background: rgba(0,0,0,0.15);
+    padding: 12px 18px 18px;
     }
     table{
-      width:100%;
-      border-collapse:collapse;
-      color:#e8ffe8;
-      font-size:14px;
+    width:100%;
+    border-collapse:collapse;
+    color:#e8ffe8;
+    font-size:14px;
     }
     thead th{
-      text-align:left;
-      padding:6px 4px;
-      border-bottom:1px solid rgba(255,255,255,0.3);
+    text-align:left;
+    padding:6px 4px;
+    border-bottom:1px solid rgba(255,255,255,0.3);
     }
     tbody td{ padding:6px 4px; }
     tbody tr:nth-child(odd){ background:rgba(255,255,255,0.03); }
@@ -187,103 +187,103 @@
     .col-username{ width:40%; font-style:italic; }
     .col-point{ width:100px; }
     .col-id{ width:120px; }
-  </style>
+</style>
 </head>
 
 <body>
-  <!-- 統一UI（これだけ残す） -->
-  <header class="top-ui">
+<!-- 統一UI（これだけ残す） -->
+<header class="top-ui">
     <button class="ui-back" type="button" onclick="goBack()">
-      <span>◀</span><span>戻る</span>
+    <span>◀</span><span>戻る</span>
     </button>
 
     <button class="ui-menu" type="button" aria-label="menu" onclick="toggleMenu()">
-      <span class="ui-burger" aria-hidden="true">
+    <span class="ui-burger" aria-hidden="true">
         <span></span><span></span><span></span>
-      </span>
+    </span>
     </button>
-  </header>
+</header>
 
-  <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
-  <nav class="menu-panel" id="menuPanel" aria-hidden="true">
+<div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+<nav class="menu-panel" id="menuPanel" aria-hidden="true">
     <a href="Stert_Window.php">Start</a>
     <a href="Login.php">Login</a>
     <a href="GameChange.php">Games</a>
     <a href="ranking.php">Ranking</a>
     <a href="New_User.php">New User</a>
-  </nav>
+</nav>
 
-  <div class="page">
+<div class="page">
     <!-- 検索バー -->
     <div class="search-bar">
-      <div class="search-tab-label">ユーザー検索</div>
-      <div class="search-input-wrap">
+    <div class="search-tab-label">ユーザー検索</div>
+    <div class="search-input-wrap">
         <input type="text" id="search-input" placeholder="Username / User IDで検索">
-      </div>
-      <button class="search-button" id="search-btn">検索</button>
+    </div>
+    <button class="search-button" id="search-btn">検索</button>
     </div>
 
     <!-- ランキング表 -->
     <div class="ranking-box">
-      <table id="ranking-table">
+    <table id="ranking-table">
         <thead>
-          <tr>
+        <tr>
             <th class="col-rank">Rank</th>
             <th class="col-username">Username</th>
             <th class="col-point">Point</th>
             <th class="col-id">User ID</th>
-          </tr>
+        </tr>
         </thead>
         <tbody>
-          <tr><td>1</td><td>USER_NAME_01</td><td>9,500 Pt</td><td>ID001</td></tr>
-          <tr><td>2</td><td>USER_NAME_02</td><td>9,000 Pt</td><td>ID002</td></tr>
-          <tr><td>3</td><td>USER_NAME_03</td><td>8,500 Pt</td><td>ID003</td></tr>
-          <tr><td>4</td><td>USER_NAME_04</td><td>8,000 Pt</td><td>ID004</td></tr>
-          <tr><td>5</td><td>USER_NAME_05</td><td>7,500 Pt</td><td>ID005</td></tr>
+        <tr><td>1</td><td>USER_NAME_01</td><td>9,500 Pt</td><td>ID001</td></tr>
+        <tr><td>2</td><td>USER_NAME_02</td><td>9,000 Pt</td><td>ID002</td></tr>
+        <tr><td>3</td><td>USER_NAME_03</td><td>8,500 Pt</td><td>ID003</td></tr>
+        <tr><td>4</td><td>USER_NAME_04</td><td>8,000 Pt</td><td>ID004</td></tr>
+        <tr><td>5</td><td>USER_NAME_05</td><td>7,500 Pt</td><td>ID005</td></tr>
         </tbody>
-      </table>
+    </table>
     </div>
-  </div>
+</div>
 
-  <script>
+<script>
     // 検索（Username / User ID）
     const input = document.getElementById('search-input');
     const btn = document.getElementById('search-btn');
     const tbody = document.getElementById('ranking-table').tBodies[0];
 
     function doSearch(){
-      const q = input.value.trim().toLowerCase();
-      Array.from(tbody.rows).forEach(row => {
+    const q = input.value.trim().toLowerCase();
+    Array.from(tbody.rows).forEach(row => {
         const username = row.cells[1].textContent.toLowerCase();
         const userId   = row.cells[3].textContent.toLowerCase();
         const hit = !q || username.includes(q) || userId.includes(q);
         row.style.display = hit ? '' : 'none';
-      });
+    });
     }
     btn.addEventListener('click', doSearch);
     input.addEventListener('keydown', e => { if(e.key === 'Enter') doSearch(); });
 
     // 戻る（履歴がない時の保険付き）
     function goBack(){
-      if(history.length > 1) history.back();
-      else location.href = "GameChange.php";
+    if(history.length > 1) history.back();
+    else location.href = "GameChange.php";
     }
 
     // メニュー開閉
     function toggleMenu(){
-      const p = document.getElementById("menuPanel");
-      const o = document.getElementById("menuOverlay");
-      const open = !p.classList.contains("open");
-      p.classList.toggle("open", open);
-      o.classList.toggle("open", open);
-      p.setAttribute("aria-hidden", String(!open));
+    const p = document.getElementById("menuPanel");
+    const o = document.getElementById("menuOverlay");
+    const open = !p.classList.contains("open");
+    p.classList.toggle("open", open);
+    o.classList.toggle("open", open);
+    p.setAttribute("aria-hidden", String(!open));
     }
     function closeMenu(){
-      document.getElementById("menuPanel").classList.remove("open");
-      document.getElementById("menuOverlay").classList.remove("open");
-      document.getElementById("menuPanel").setAttribute("aria-hidden","true");
+    document.getElementById("menuPanel").classList.remove("open");
+    document.getElementById("menuOverlay").classList.remove("open");
+    document.getElementById("menuPanel").setAttribute("aria-hidden","true");
     }
     document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeMenu(); });
-  </script>
+</script>
 </body>
 </html>
