@@ -132,7 +132,124 @@ body {
             max-width: 600px;
             font-size: 14px;
         }
-    </style>
+    
+/* ===== 共通UI（戻る・ハンバーガー統一） ===== */
+:root{
+  --ui-bg: rgba(0,0,0,0.35);
+  --ui-bd: rgba(255,255,255,0.14);
+  --ui-tx: #fff;
+  --ui-muted: rgba(255,255,255,0.78);
+}
+.site-header{
+  position: fixed;
+  left: 0; right: 0; top: 12px;
+  z-index: 9999;
+  padding: 0 16px;
+  pointer-events: none;
+}
+.site-header .header-inner{
+  max-width: 980px;
+  margin: 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-bd);
+  backdrop-filter: blur(6px);
+  pointer-events: auto;
+}
+.header-title{
+  flex: 1;
+  text-align:center;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--ui-tx);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ui-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.14);
+  color: var(--ui-tx);
+  font-weight: 800;
+  cursor: pointer;
+  user-select:none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 6px 0 rgba(0,0,0,0.25);
+}
+.ui-btn:active{ transform: translateY(1px); }
+.ui-btn.back{ background:#111; border-color: rgba(255,255,255,0.10); box-shadow: 0 6px 0 rgba(0,0,0,0.45); }
+.ui-btn.menu{ width: 44px; padding: 10px 0; }
+
+/* bodyの上に余白を作る（display:flexでも崩れにくい） */
+body{ padding-top: 92px !important; }
+
+/* Drawer */
+.menu-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease;
+  z-index: 9998;
+}
+.menu-drawer{
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  width: min(340px, calc(100vw - 32px));
+  max-height: calc(100vh - 24px);
+  overflow:auto;
+  transform: translateY(-6px) scale(0.98);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease;
+  z-index: 10000;
+  border-radius: 16px;
+  background: rgba(0,0,0,0.78);
+  border: 1px solid rgba(255,255,255,0.14);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+}
+.menu-drawer.open{ opacity:1; pointer-events:auto; transform: translateY(0) scale(1); }
+.menu-backdrop.open{ opacity:1; pointer-events:auto; }
+.menu-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+.menu-head .menu-title{ font-weight: 900; letter-spacing: .06em; color: var(--ui-tx); }
+.menu-list{ padding: 10px; display:flex; flex-direction:column; gap: 8px; }
+.menu-link{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  padding: 12px 12px;
+  border-radius: 12px;
+  text-decoration:none;
+  color: var(--ui-tx);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.14);
+}
+.menu-link small{ color: var(--ui-muted); font-weight: 700; }
+.menu-link:active{ transform: translateY(1px); }
+
+</style>
 </head>
 <body>
 

@@ -252,28 +252,140 @@ html, body {
   .card-slot, .slot-img, .floating-card { width: 86px; height:126px; }
   #deck-pos { right:60px; top:14px; width:86px; height:126px; }
 }
+/* ===== 画像のUIに合わせた戻る＋ハンバーガー（統一） ===== */
+body{ padding-top: 72px; } /* 92pxでもOK。BJは72で十分 */
+
+.top-ui{
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  z-index: 10000;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  pointer-events:none;
+}
+.ui-back,.ui-menu{ pointer-events:auto; }
+
+.ui-back{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:none;
+  background:rgba(0,0,0,0.78);
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 10px 22px rgba(0,0,0,0.35);
+}
+.ui-menu{
+  width:48px;
+  height:48px;
+  border-radius:12px;
+  border:none;
+  background:rgba(0,0,0,0.78);
+  cursor:pointer;
+  box-shadow:0 10px 22px rgba(0,0,0,0.35);
+  display:grid;
+  place-items:center;
+}
+.ui-back:active,.ui-menu:active{ transform:translateY(1px); }
+
+.ui-burger{ display:flex; flex-direction:column; gap:5px; }
+.ui-burger span{ width:20px; height:2px; background:#fff; border-radius:2px; display:block; }
+
+/* メニュー */
+.menu-overlay{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,0.35);
+  opacity:0; pointer-events:none;
+  transition:opacity .18s;
+  z-index:9998;
+}
+.menu-panel{
+  position:fixed;
+  top:72px;
+  right:14px;
+  width:220px;
+  padding:10px;
+  border-radius:14px;
+  background:rgba(0,0,0,0.78);
+  border:1px solid rgba(255,255,255,0.14);
+  backdrop-filter:blur(8px);
+  box-shadow:0 20px 50px rgba(0,0,0,0.45);
+  opacity:0;
+  transform:translateY(-6px);
+  pointer-events:none;
+  transition:opacity .18s, transform .18s;
+  z-index:9999;
+}
+.menu-panel a{
+  display:block;
+  padding:10px 12px;
+  border-radius:10px;
+  color:#fff;
+  text-decoration:none;
+  font-weight:800;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  margin-bottom:8px;
+}
+.menu-panel a:last-child{ margin-bottom:0; }
+.menu-overlay.open{ opacity:1; pointer-events:auto; }
+.menu-panel.open{ opacity:1; transform:translateY(0); pointer-events:auto; }
+
+/* ===== ゲームボタンを .btn から分離（競合防止） ===== */
+.game-btn{
+  background:#f7c843;
+  color:#000;
+  padding:12px 18px;
+  font-size:16px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+.game-btn:disabled{
+  background:#777 !important;
+  color:#ccc !important;
+  cursor:default;
+  opacity:.6;
+}
+
+/* デッキ位置を少し下げてヘッダと被らないように */
+#deck-pos{ top: 86px; right: 14px; } /* ←ここ重要 */
+@media (max-width:600px){
+  #deck-pos{ top: 74px; right: 14px; }
+}
+
 </style>
 </head>
 <body>
 
 <?php // header include (置くだけで HTML に挿入されます) ?>
-<header class="site-header">
-  <button class="btn btn-back" onclick="location.href='Stert_Window.php'">◀ すべてに戻る</button>
-  <button class="btn btn-hamburger" id="menuToggle" aria-label="menu" onclick="toggleMenu()">
-    <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+<header class="top-ui">
+  <button class="ui-back" type="button" onclick="goBackBJ()">
+    <span>◀</span><span>戻る</span>
+  </button>
+
+  <button class="ui-menu" type="button" aria-label="menu" onclick="toggleMenu()">
+    <span class="ui-burger" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </span>
   </button>
 </header>
 
-<nav class="side-menu" id="sideMenu" aria-hidden="true">
-  <ul>
-    <li><a class="nav-link" href="Stert_Window.php">Start</a></li>
-    <li><a class="nav-link" href="Login.php">Login</a></li>
-    <li><a class="nav-link" href="GameChange.php">Games</a></li>
-    <li><a class="nav-link" href="ranking.php">Ranking</a></li>
-    <li><a class="nav-link" href="New_User.php">New User</a></li>
-  </ul>
+<div class="menu-overlay" id="menuOverlay2" onclick="closeMenu()"></div>
+<nav class="menu-panel" id="menuPanel2" aria-hidden="true">
+  <a href="Stert_Window.php">Start</a>
+  <a href="Login.php">Login</a>
+  <a href="GameChange.php">Games</a>
+  <a href="ranking.php">Ranking</a>
+  <a href="New_User.php">New User</a>
 </nav>
-<div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
 
 <!-- デッキの見た目 -->
 <div id="deck-pos"><img src="https://deckofcardsapi.com/static/img/back.png" alt="deck" /></div>
@@ -297,9 +409,11 @@ html, body {
     <div class="player-cards" id="player-cards"></div>
 
     <div class="action-buttons">
-      <button class="btn" id="hit-btn">HIT</button>
-      <button class="btn" id="stand-btn">STAND</button>
-      <button class="btn" id="newgame-btn" style="display:none;">NEW GAME</button>
+      <button class="game-btn" id="hit-btn">HIT</button>
+      <button class="game-btn" id="stand-btn">STAND</button>
+      <button class="game-btn" id="newgame-btn" style="display:none;">NEW GAME</button>
+
+
     </div>
   </div>
 
@@ -614,33 +728,26 @@ document.getElementById("newgame-btn").addEventListener("click", async () => {
   await newDeck();
   await dealInitialFour();
 });
+function goBackBJ(){
+  if(history.length > 1) history.back();
+  else location.href = "GameChange.php";
+}
 
-/* ---------- ボタンイベント ---------- */
-document.getElementById("hit-btn").addEventListener("click", async () => {
-  if (calcTotal(playerCards) <= 21) {
-    await playerHit();
-    updateTotals();
-    if (calcTotal(playerCards) > 21) {
-      await revealDealerSecond();
-      showResult();
-    }
-  }
-});
+function toggleMenu(){
+  const p = document.getElementById("menuPanel2");
+  const o = document.getElementById("menuOverlay2");
+  const open = !p.classList.contains("open");
+  p.classList.toggle("open", open);
+  o.classList.toggle("open", open);
+  p.setAttribute("aria-hidden", String(!open));
+}
+function closeMenu(){
+  document.getElementById("menuPanel2").classList.remove("open");
+  document.getElementById("menuOverlay2").classList.remove("open");
+  document.getElementById("menuPanel2").setAttribute("aria-hidden","true");
+}
+document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeMenu(); });
 
-document.getElementById("stand-btn").addEventListener("click", async () => {
-  document.getElementById("hit-btn").disabled = true;
-  document.getElementById("stand-btn").disabled = true;
-  await dealerTurn();
-});
-
-/* ---------- 初期処理 ---------- */
-(async function init(){
-  document.getElementById("hit-btn").disabled = true;
-  document.getElementById("stand-btn").disabled = true;
-  document.getElementById("newgame-btn").style.display = "none";
-  await newDeck();
-  await dealInitialFour();
-})();
 </script>
 </body>
 </html>

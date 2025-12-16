@@ -1,528 +1,289 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-    <meta charset="UTF-8">
-    <title>ランキング</title>
-    <style>
-        
-/* ===== 共通レイアウト（全ページ統一） ===== */
-:root{
-    --bg1:#277b3c;
-    --bg2:#16602c;
-    --bg3:#0e3f1d;
-    --panel: rgba(255,255,255,0.10);
-    --panel2: rgba(0,0,0,0.25);
-    --text:#ffffff;
-    --muted: rgba(255,255,255,0.75);
-    --accent:#f4b034;
-    --radius:16px;
-}
-*{ box-sizing:border-box; }
-html,body{ height:100%; }
-body{
-    margin:0;
-    font-family: "Segoe UI","Noto Sans JP",sans-serif;
-    color:var(--text);
-    background: radial-gradient(circle at 20% 20%, var(--bg1) 0, var(--bg2) 55%, var(--bg3) 100%);
-  padding: 92px 16px 24px; /* 固定ヘッダ分の余白 */
-}
-.page{
-    max-width: 980px;
-    margin: 0 auto;
-}
-.panel{
-    background: var(--panel);
-    border: 1px solid rgba(255,255,255,0.18);
-    border-radius: var(--radius);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.35);
-    padding: 18px;
-}
-h1,h2,h3{ margin: 0 0 12px; }
-.small{ color: var(--muted); font-size: 0.95rem; }
+  <meta charset="UTF-8">
+  <title>ランキング</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-/* 共通ヘッダ */
-.site-header{
-    position: fixed;
-    left: 0; right: 0; top: 12px;
-    z-index: 999;
-    padding: 0 16px;
-}
-.site-header .header-inner{
-    max-width: 980px;
-    margin: 0 auto;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap: 12px;
-    padding: 10px 12px;
-    border-radius: 14px;
-    background: rgba(0,0,0,0.35);
-    backdrop-filter: blur(6px);
-}
-.header-title{
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-align:center;
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap: 8px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    border: none;
-    font-weight: 800;
-    cursor: pointer;
-    text-decoration:none;
-    user-select:none;
-    -webkit-tap-highlight-color: transparent;
-}
-.btn:active{ transform: translateY(1px); }
-.btn-primary{ background: var(--accent); color:#111; box-shadow: 0 6px 0 rgba(0,0,0,0.25); }
-.btn-secondary{ background: rgba(255,255,255,0.16); color: #fff; box-shadow: 0 6px 0 rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.18); }
-.btn-back{ background:#111; color:#fff; box-shadow: 0 6px 0 rgba(0,0,0,0.45); }
+  <style>
+    /* ===== 背景など（共通） ===== */
+    :root{
+      --bg1:#277b3c;
+      --bg2:#16602c;
+      --bg3:#0e3f1d;
+      --text:#ffffff;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family:"Segoe UI","Noto Sans JP",sans-serif;
+      color:var(--text);
+      background: radial-gradient(circle at 20% 20%, var(--bg1) 0, var(--bg2) 55%, var(--bg3) 100%);
+      padding-top: 72px; /* 上の固定UIぶん */
+    }
+    .page{
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
 
-* {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "Segoe UI", "Noto Sans JP", sans-serif;
-        }
+    /* ===== 画像のUIに合わせた戻る＋ハンバーガー ===== */
+    .top-ui{
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      z-index: 10000;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      pointer-events:none;
+    }
+    .ui-back,.ui-menu{ pointer-events:auto; }
 
-        body {
-            min-height: 100vh;
-            background: #1d7a33;
-            background-image:
-                radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.08) 0, transparent 55%),
-                radial-gradient(circle at 100% 100%, rgba(0, 0, 0, 0.25) 0, transparent 60%);
-            color: #fff;
-        }
+    .ui-back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:none;
+      background: rgba(0,0,0,0.78);
+      color:#fff;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+    }
+    .ui-menu{
+      width:48px;
+      height:48px;
+      border-radius:12px;
+      border:none;
+      background: rgba(0,0,0,0.78);
+      cursor:pointer;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+      display:grid;
+      place-items:center;
+    }
+    .ui-back:active,.ui-menu:active{ transform:translateY(1px); }
 
-        .page {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 0 20px;
-            position: relative;
-        }
+    .ui-burger{ display:flex; flex-direction:column; gap:5px; }
+    .ui-burger span{
+      width:20px;
+      height:2px;
+      background:#fff;
+      border-radius:2px;
+      display:block;
+    }
 
-        /* 上部ボタン ------------------------------------------------*/
+    /* ===== メニュー（右上に出るやつ） ===== */
+    .menu-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .18s;
+      z-index: 9998;
+    }
+    .menu-panel{
+      position:fixed;
+      top:72px;
+      right:14px;
+      width:220px;
+      padding:10px;
+      border-radius:14px;
+      background:rgba(0,0,0,0.78);
+      border:1px solid rgba(255,255,255,0.14);
+      opacity:0;
+      transform:translateY(-6px);
+      pointer-events:none;
+      transition:opacity .18s, transform .18s;
+      z-index: 9999;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+    }
+    .menu-panel a{
+      display:block;
+      padding:10px 12px;
+      border-radius:10px;
+      color:#fff;
+      text-decoration:none;
+      font-weight:800;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.12);
+      margin-bottom:8px;
+    }
+    .menu-panel a:last-child{ margin-bottom:0; }
 
-        .top-buttons {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
+    .menu-overlay.open{ opacity:1; pointer-events:auto; }
+    .menu-panel.open{ opacity:1; transform:translateY(0); pointer-events:auto; }
 
-        .btn-pill {
-            background: #111;
-            color: #fff;
-            border-radius: 999px;
-            padding: 8px 18px;
-            font-size: 14px;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.5);
-        }
+    /* ===== 検索バー ===== */
+    .search-bar{
+      display:flex;
+      align-items:stretch;
+      margin: 0 auto 25px;
+      width:100%;
+      max-width:650px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.35);
+    }
+    .search-tab-label{
+      background:#f5f5f5;
+      color:#222;
+      padding:10px 20px;
+      font-weight:700;
+      border-top-left-radius:4px;
+    }
+    .search-input-wrap{
+      flex:1;
+      background:#6b7a4b;
+      display:flex;
+      align-items:center;
+      padding:0 10px;
+    }
+    .search-input-wrap input{
+      width:100%;
+      padding:6px 8px;
+      border-radius:4px;
+      border:none;
+      outline:none;
+      font-size:14px;
+    }
+    .search-button{
+      background:#d0d6db;
+      color:#222;
+      padding:10px 25px;
+      font-weight:700;
+      border:none;
+      cursor:pointer;
+      border-top-right-radius:4px;
+      border-bottom-right-radius:4px;
+    }
 
-        .menu-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .menu-icon {
-            display: inline-flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .menu-icon span {
-            display: block;
-            width: 16px;
-            height: 2px;
-            background: #fff;
-        }
-
-        .menu-label {
-            font-size: 12px;
-            letter-spacing: 1px;
-        }
-
-        /* 検索バー --------------------------------------------------*/
-
-        .search-bar {
-            display: flex;
-            align-items: stretch;
-            margin: 0 auto 25px;
-            width: 100%;
-            max-width: 650px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
-        }
-
-        .search-tab-label {
-            background: #f5f5f5;
-            color: #222;
-            padding: 10px 20px;
-            font-weight: 700;
-            border-top-left-radius: 4px;
-        }
-
-        .search-input-wrap {
-            flex: 1;
-            background: #6b7a4b;
-            display: flex;
-            align-items: center;
-            padding: 0 10px;
-        }
-
-        .search-input-wrap input {
-            width: 100%;
-            padding: 6px 8px;
-            border-radius: 4px;
-            border: none;
-            outline: none;
-            font-size: 14px;
-        }
-
-        .search-button {
-            background: #d0d6db;
-            color: #222;
-            padding: 10px 25px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            border-top-right-radius: 4px;
-            border-bottom-right-radius: 4px;
-        }
-
-        /* ランキング表 ----------------------------------------------*/
-
-        .ranking-box {
-            margin: 0 auto;
-            max-width: 650px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(0, 0, 0, 0.15);
-            padding: 12px 18px 18px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            color: #e8ffe8;
-            font-size: 14px;
-        }
-
-        thead th {
-            text-align: left;
-            padding: 6px 4px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        tbody td {
-            padding: 6px 4px;
-        }
-
-        tbody tr:nth-child(odd) {
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .col-rank {
-            width: 50px;
-        }
-
-        .col-username {
-            width: 40%;
-            font-style: italic;
-        }
-
-        .col-point {
-            width: 100px;
-        }
-
-        .col-id {
-            width: 120px;
-        }
-
-        /* 共通ボタン / ヘッダスタイル */
-        .site-header {
-            position: fixed;
-            left: 0;
-            right: 0;
-            top: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            padding: 0 14px;
-            z-index: 10010;
-            pointer-events: none;
-        }
-
-        .site-header .btn {
-            pointer-events: auto;
-        }
-
-        /* 統一ボタン */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 10px 16px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2);
-            background: #f4b034;
-            color: #111;
-            font-size: 16px;
-        }
-
-        .btn-secondary {
-            background: #ffe082;
-            color: #111;
-            box-shadow: 0 4px 0 #b06304;
-        }
-
-        .btn-back {
-            background: #111;
-            color: #fff;
-            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.6);
-        }
-
-        /* ハンバーガー */
-        .btn-hamburger {
-            width: 48px;
-            height: 48px;
-            padding: 8px;
-            border-radius: 10px;
-            background: #222;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-hamburger .bar {
-            display: block;
-            width: 20px;
-            height: 2px;
-            background: #fff;
-            margin: 3px 0;
-        }
-
-        /* サイドメニュー */
-        .side-menu {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 280px;
-            height: 100vh;
-            background: linear-gradient(180deg, #164f2b, #0f3a1e);
-            color: #fff;
-            padding: 70px 18px;
-            box-shadow: -8px 0 24px rgba(0, 0, 0, 0.5);
-            transition: right .32s ease;
-            z-index: 10005;
-        }
-
-        .side-menu.open {
-            right: 0;
-        }
-
-        .side-menu ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .side-menu .nav-link {
-            display: block;
-            padding: 12px 14px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.04);
-            color: #fff;
-            text-decoration: none;
-            font-weight: 700;
-        }
-
-        /* オーバーレイ */
-        .menu-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            opacity: 0;
-            transition: opacity .24s;
-            z-index: 10000;
-            pointer-events: none;
-        }
-
-        .menu-overlay.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        /* 小画面調整 */
-        @media (max-width: 480px) {
-            .btn {
-                padding: 8px 12px;
-                font-size: 14px;
-                border-radius: 10px;
-            }
-
-            .side-menu {
-                width: 220px;
-                right: -240px;
-            }
-
-            .site-header {
-                top: 8px;
-                padding: 0 10px;
-            }
-        }
-    </style>
+    /* ===== ランキング表 ===== */
+    .ranking-box{
+      margin: 0 auto;
+      max-width:650px;
+      border:1px solid rgba(255,255,255,0.3);
+      background: rgba(0,0,0,0.15);
+      padding: 12px 18px 18px;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      color:#e8ffe8;
+      font-size:14px;
+    }
+    thead th{
+      text-align:left;
+      padding:6px 4px;
+      border-bottom:1px solid rgba(255,255,255,0.3);
+    }
+    tbody td{ padding:6px 4px; }
+    tbody tr:nth-child(odd){ background:rgba(255,255,255,0.03); }
+    .col-rank{ width:50px; }
+    .col-username{ width:40%; font-style:italic; }
+    .col-point{ width:100px; }
+    .col-id{ width:120px; }
+  </style>
 </head>
 
 <body>
+  <!-- 統一UI（これだけ残す） -->
+  <header class="top-ui">
+    <button class="ui-back" type="button" onclick="goBack()">
+      <span>◀</span><span>戻る</span>
+    </button>
 
-    <div class="page">
+    <button class="ui-menu" type="button" aria-label="menu" onclick="toggleMenu()">
+      <span class="ui-burger" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+  </header>
 
-        <!-- 戻る / MENU -->
-        <div class="top-buttons">
-            <button class="btn-pill" onclick="history.back()">◀ 戻る</button>
+  <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+  <nav class="menu-panel" id="menuPanel" aria-hidden="true">
+    <a href="Stert_Window.php">Start</a>
+    <a href="Login.php">Login</a>
+    <a href="GameChange.php">Games</a>
+    <a href="ranking.php">Ranking</a>
+    <a href="New_User.php">New User</a>
+  </nav>
 
-            <button class="btn-pill menu-btn">
-                <span class="menu-icon">
-                    <span></span><span></span><span></span>
-                </span>
-                <span class="menu-label">MENU</span>
-            </button>
-        </div>
-
-        <!-- 検索バー -->
-        <div class="search-bar">
-            <div class="search-tab-label">ユーザー検索</div>
-            <div class="search-input-wrap">
-                <input type="text" id="search-input" placeholder="Username / User IDで検索">
-            </div>
-            <button class="search-button" id="search-btn">検索</button>
-        </div>
-
-        <!-- ランキング表 -->
-        <div class="ranking-box">
-            <table id="ranking-table">
-                <thead>
-                    <tr>
-                        <th class="col-rank">Rank</th>
-                        <th class="col-username">Username</th>
-                        <th class="col-point">Point</th>
-                        <th class="col-id">User ID</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- ここはサーバから出してもOK。いまはダミー -->
-                    <tr>
-                        <td>1</td>
-                        <td>USER_NAME_01</td>
-                        <td>9,500 Pt</td>
-                        <td>ID001</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>USER_NAME_02</td>
-                        <td>9,000 Pt</td>
-                        <td>ID002</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>USER_NAME_03</td>
-                        <td>8,500 Pt</td>
-                        <td>ID003</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>USER_NAME_04</td>
-                        <td>8,000 Pt</td>
-                        <td>ID004</td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>USER_NAME_05</td>
-                        <td>7,500 Pt</td>
-                        <td>ID005</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
+  <div class="page">
+    <!-- 検索バー -->
+    <div class="search-bar">
+      <div class="search-tab-label">ユーザー検索</div>
+      <div class="search-input-wrap">
+        <input type="text" id="search-input" placeholder="Username / User IDで検索">
+      </div>
+      <button class="search-button" id="search-btn">検索</button>
     </div>
 
-    <script>
-        // 簡単なクライアント側の検索（Username / User ID に部分一致）
-        const input = document.getElementById('search-input');
-        const btn = document.getElementById('search-btn');
-        const table = document.getElementById('ranking-table').tBodies[0];
+    <!-- ランキング表 -->
+    <div class="ranking-box">
+      <table id="ranking-table">
+        <thead>
+          <tr>
+            <th class="col-rank">Rank</th>
+            <th class="col-username">Username</th>
+            <th class="col-point">Point</th>
+            <th class="col-id">User ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>USER_NAME_01</td><td>9,500 Pt</td><td>ID001</td></tr>
+          <tr><td>2</td><td>USER_NAME_02</td><td>9,000 Pt</td><td>ID002</td></tr>
+          <tr><td>3</td><td>USER_NAME_03</td><td>8,500 Pt</td><td>ID003</td></tr>
+          <tr><td>4</td><td>USER_NAME_04</td><td>8,000 Pt</td><td>ID004</td></tr>
+          <tr><td>5</td><td>USER_NAME_05</td><td>7,500 Pt</td><td>ID005</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-        function doSearch() {
-            const q = input.value.trim().toLowerCase();
-            Array.from(table.rows).forEach(row => {
-                const username = row.cells[1].textContent.toLowerCase();
-                const userId = row.cells[3].textContent.toLowerCase();
-                const hit = !q || username.includes(q) || userId.includes(q);
-                row.style.display = hit ? '' : 'none';
-            });
-        }
+  <script>
+    // 検索（Username / User ID）
+    const input = document.getElementById('search-input');
+    const btn = document.getElementById('search-btn');
+    const tbody = document.getElementById('ranking-table').tBodies[0];
 
-        btn.addEventListener('click', doSearch);
-        input.addEventListener('keydown', e => {
-            if (e.key === 'Enter') doSearch();
-        });
+    function doSearch(){
+      const q = input.value.trim().toLowerCase();
+      Array.from(tbody.rows).forEach(row => {
+        const username = row.cells[1].textContent.toLowerCase();
+        const userId   = row.cells[3].textContent.toLowerCase();
+        const hit = !q || username.includes(q) || userId.includes(q);
+        row.style.display = hit ? '' : 'none';
+      });
+    }
+    btn.addEventListener('click', doSearch);
+    input.addEventListener('keydown', e => { if(e.key === 'Enter') doSearch(); });
 
-        function toggleMenu() {
-            const m = document.getElementById('sideMenu');
-            const o = document.getElementById('menuOverlay');
-            const open = m.classList.toggle('open');
-            o.classList.toggle('show', open);
-            m.setAttribute('aria-hidden', !open);
-        }
+    // 戻る（履歴がない時の保険付き）
+    function goBack(){
+      if(history.length > 1) history.back();
+      else location.href = "GameChange.php";
+    }
 
-        function closeMenu() {
-            document.getElementById('sideMenu').classList.remove('open');
-            document.getElementById('menuOverlay').classList.remove('show');
-            document.getElementById('sideMenu').setAttribute('aria-hidden', 'true');
-        }
-    </script>
-
-    <?php // header include (置くだけで HTML に挿入されます) ?>
-    <header class="site-header">
-        <button class="btn btn-back" onclick="location.href='Stert_Window.php'">◀ すべてに戻る</button>
-        <button class="btn btn-hamburger" id="menuToggle" aria-label="menu" onclick="toggleMenu()">
-            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-        </button>
-    </header>
-
-    <nav class="side-menu" id="sideMenu" aria-hidden="true">
-        <ul>
-            <li><a class="nav-link" href="Stert_Window.php">Start</a></li>
-            <li><a class="nav-link" href="Login.php">Login</a></li>
-            <li><a class="nav-link" href="GameChange.php">Games</a></li>
-            <li><a class="nav-link" href="ranking.php">Ranking</a></li>
-            <li><a class="nav-link" href="New_User.php">New User</a></li>
-        </ul>
-    </nav>
-    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
-
+    // メニュー開閉
+    function toggleMenu(){
+      const p = document.getElementById("menuPanel");
+      const o = document.getElementById("menuOverlay");
+      const open = !p.classList.contains("open");
+      p.classList.toggle("open", open);
+      o.classList.toggle("open", open);
+      p.setAttribute("aria-hidden", String(!open));
+    }
+    function closeMenu(){
+      document.getElementById("menuPanel").classList.remove("open");
+      document.getElementById("menuOverlay").classList.remove("open");
+      document.getElementById("menuPanel").setAttribute("aria-hidden","true");
+    }
+    document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeMenu(); });
+  </script>
 </body>
-
 </html>
