@@ -1,568 +1,348 @@
+<?php
+session_start();
+
+/* DB設定などはそのまま */
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'login_db');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+
+$login_page = "Login.php";
+$error_message = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $input_user_id = isset($_POST['user_id']) ? $_POST['user_id'] : '';
+    $input_password = isset($_POST['password']) ? $_POST['password'] : '';
+
+    if (empty($input_user_id) || empty($input_password)) {
+        $error_message = "ユーザーIDとパスワードを入力してください。";
+    } else {
+        try {
+            $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4", DB_USER, DB_PASS);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $stmt = $pdo->prepare("SELECT user_id, user_name, password AS password_hash FROM users WHERE user_id = :user_id");
+            $stmt->bindParam(':user_id', $input_user_id);
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user && password_verify($input_password, $user['password_hash'])) {
+                session_regenerate_id(true);
+
+                $_SESSION['logged_in'] = true;
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['password'] = $user['password_hash'];
+
+                header("Location: GameChange.php");
+                exit();
+            } else {
+                $error_message = "ユーザーIDまたはパスワードが間違っています。";
+            }
+        } catch (PDOException $e) {
+            $error_message = "データベース接続エラー: 設定を確認してください。";
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-    <meta charset="UTF-8">
-    <title>カードログイン画面</title>
-    <style>
-        
-/* ===== 共通レイアウト（全ページ統一） ===== */
-:root{
-    --bg1:#277b3c;
-    --bg2:#16602c;
-    --bg3:#0e3f1d;
-    --panel: rgba(255,255,255,0.10);
-    --panel2: rgba(0,0,0,0.25);
-    --text:#ffffff;
-    --muted: rgba(255,255,255,0.75);
-    --accent:#f4b034;
-    --radius:16px;
-}
-*{ box-sizing:border-box; }
-html,body{ height:100%; }
-body{
-    margin:0;
-    font-family: "Segoe UI","Noto Sans JP",sans-serif;
-    color:var(--text);
-    background: radial-gradient(circle at 20% 20%, var(--bg1) 0, var(--bg2) 55%, var(--bg3) 100%);
-  padding: 92px 16px 24px; /* 固定ヘッダ分の余白 */
-}
-.page{
-    max-width: 980px;
-    margin: 0 auto;
-}
-.panel{
-    background: var(--panel);
-    border: 1px solid rgba(255,255,255,0.18);
-    border-radius: var(--radius);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.35);
-    padding: 18px;
-}
-h1,h2,h3{ margin: 0 0 12px; }
-.small{ color: var(--muted); font-size: 0.95rem; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>カードログイン画面</title>
+  <style>
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+      font-family:"Segoe UI","Noto Sans JP",sans-serif;
+    }
 
-/* 共通ヘッダ */
-.site-header{
-    position: fixed;
-    left: 0; right: 0; top: 12px;
-    z-index: 999;
-    padding: 0 16px;
-}
-.site-header .header-inner{
-    max-width: 980px;
-    margin: 0 auto;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap: 12px;
-    padding: 10px 12px;
-    border-radius: 14px;
-    background: rgba(0,0,0,0.35);
-    border: 1px solid rgba(255,255,255,0.14);
-    backdrop-filter: blur(6px);
-}
-.header-title{
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-align:center;
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap: 8px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    border: none;
-    font-weight: 800;
-    cursor: pointer;
-    text-decoration:none;
-    user-select:none;
-    -webkit-tap-highlight-color: transparent;
-}
-.btn:active{ transform: translateY(1px); }
-.btn-primary{ background: var(--accent); color:#111; box-shadow: 0 6px 0 rgba(0,0,0,0.25); }
-.btn-secondary{ background: rgba(255,255,255,0.16); color: #fff; box-shadow: 0 6px 0 rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.18); }
-.btn-back{ background:#111; color:#fff; box-shadow: 0 6px 0 rgba(0,0,0,0.45); }
+    body{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      background: radial-gradient(circle at 20% 20%, #277b3c 0, #16602c 55%, #0e3f1d 100%);
+      padding-top: 72px; /* 上UI分 */
+    }
 
-* {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "Segoe UI", "Noto Sans JP", sans-serif;
-        }
+    /* ===== 上部UI（画像のやつ） ===== */
+    .top-ui{
+      position:fixed;
+      top:14px;
+      left:14px;
+      right:14px;
+      z-index:10000;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      pointer-events:none;
+    }
+    .ui-back,.ui-menu{ pointer-events:auto; }
 
-        body {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background:
-                radial-gradient(circle at 20% 20%, #277b3c 0, #16602c 55%, #0e3f1d 100%);
-        }
+    .ui-back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:none;
+      background:rgba(0,0,0,0.78);
+      color:#fff;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 10px 22px rgba(0,0,0,0.35);
+    }
+    .ui-menu{
+      width:48px;
+      height:48px;
+      border-radius:12px;
+      border:none;
+      background:rgba(0,0,0,0.78);
+      cursor:pointer;
+      box-shadow:0 10px 22px rgba(0,0,0,0.35);
+      display:grid;
+      place-items:center;
+    }
+    .ui-back:active,.ui-menu:active{ transform:translateY(1px); }
 
-        .table-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 35px;
-        }
+    .ui-burger{ display:flex; flex-direction:column; gap:5px; }
+    .ui-burger span{ width:20px; height:2px; background:#fff; border-radius:2px; display:block; }
 
-        .cards-row {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 40px;
-            white-space: nowrap;
-            flex-wrap: nowrap;          /* 基本は横並び固定 */
-            overflow-x: auto;           /* 画面が狭い時は横スクロール */
-            padding-bottom: 6px;
-        }
+    .menu-overlay{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,0.35);
+      opacity:0; pointer-events:none;
+      transition:opacity .18s;
+      z-index:9998;
+    }
+    .menu-panel{
+      position:fixed;
+      top:72px;
+      right:14px;
+      width:220px;
+      padding:10px;
+      border-radius:14px;
+      background:rgba(0,0,0,0.78);
+      border:1px solid rgba(255,255,255,0.14);
+      backdrop-filter:blur(8px);
+      box-shadow:0 20px 50px rgba(0,0,0,0.45);
+      opacity:0;
+      transform:translateY(-6px);
+      pointer-events:none;
+      transition:opacity .18s, transform .18s;
+      z-index:9999;
+    }
+    .menu-panel a{
+      display:block;
+      padding:10px 12px;
+      border-radius:10px;
+      color:#fff;
+      text-decoration:none;
+      font-weight:800;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.12);
+      margin-bottom:8px;
+    }
+    .menu-panel a:last-child{ margin-bottom:0; }
+    .menu-overlay.open{ opacity:1; pointer-events:auto; }
+    .menu-panel.open{ opacity:1; transform:translateY(0); pointer-events:auto; }
 
-        /* ログイン行だけ、ボタンを下に回すため wrap 有効 */
-        .cards-row-login {
-            flex-wrap: wrap;
-        }
+    /* ===== 既存UI ===== */
+    .table-area{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:35px;
+    }
 
-        .card-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
+    .cards-row{
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      gap:40px;
+      white-space:nowrap;
+    }
 
-        .card {
-            position: relative;
-            width: 180px;
-            aspect-ratio: 63 / 88;
-            cursor: pointer;
-            flex-shrink: 0;             /* 横スクロールでも潰れないよう固定 */
-        }
+    .card-wrapper{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:12px;
+    }
 
-        .card img {
-            width: 100%;
-            height: 100%;
-            border-radius: 14px;
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
-        }
+    .card{
+      position:relative;
+      width:180px;
+      aspect-ratio:63/88;
+      cursor:pointer;
+    }
 
-        .card-inner {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 18% 12% 14%;
-            pointer-events: none;
-        }
+    .card img{
+      width:100%;
+      height:100%;
+      border-radius:14px;
+      box-shadow:0 12px 25px rgba(0,0,0,0.4);
+    }
 
-        .field-label {
-            color: #444;
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 14px;
-            text-shadow: 0 0 3px rgba(255, 255, 255, 0.7);
-        }
+    .card-inner{
+      position:absolute;
+      inset:0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:18% 12% 14%;
+      pointer-events:none;
+    }
 
-        .field-input {
-            width: 100%;
-            pointer-events: auto;
-            padding: 6px 10px;
-            border-radius: 8px;
-            border: 3px solid #555;
-            background: #dcdcdc;
-            font-size: 16px;
-        }
+    .field-label{
+      color:#444;
+      font-size:20px;
+      font-weight:600;
+      margin-bottom:14px;
+      text-shadow:0 0 3px rgba(255,255,255,0.7);
+    }
 
-        /* 共通ボタン */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            min-width: 170px;
-            padding: 10px 16px;
-            border-radius: 12px;
-            border: 3px solid #c77707;
-            font-weight: 700;
-            cursor: pointer;
-            background: #f4b034;
-            color: #111;
-            font-size: 16px;
-            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2);
-        }
+    .field-input{
+      width:100%;
+      pointer-events:auto;
+      padding:6px 10px;
+      border-radius:8px;
+      border:3px solid #555;
+      background:#dcdcdc;
+      font-size:16px;
+    }
 
-        .btn-secondary {
-            background: #ffe082;
-            color: #111;
-            box-shadow: 0 4px 0 #b06304;
-        }
+    .btn{
+      min-width:170px;
+      padding:12px 20px;
+      border-radius:12px;
+      border:3px solid #c77707;
+      background:#f4b034;
+      font-size:18px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 6px 0 #b06304;
+    }
+    .btn-secondary{ background:#ffe082; }
 
-        /* 戻るボタン小型化 */
-        .btn-back {
-            background: #111;
-            color: #fff;
-            border-color: #111;
-            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.6);
-            min-width: auto;
-            padding: 6px 10px;
-            font-size: 14px;
-        }
+    .error-message{
+      color:#ffdddd;
+      background-color:#a00000;
+      padding:10px 20px;
+      border-radius:8px;
+      margin: 0 12px 20px;
+      font-weight:bold;
+      text-align:center;
+      border:2px solid #ff4444;
+      max-width: 940px;
+    }
 
-        /* ハンバーガー */
-        .btn-hamburger {
-            width: 44px;
-            height: 44px;
-            padding: 6px;
-            border-radius: 10px;
-            background: #222;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.6);
-            gap: 4px;
-        }
-
-        .btn-hamburger .bar {
-            display: block;
-            width: 22px;
-            height: 3px;
-            background: #fff;
-            border-radius: 999px;
-        }
-
-        /* ヘッダ */
-        .site-header {
-            position: fixed;
-            left: 0;
-            right: 0;
-            top: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            padding: 0 14px;
-            z-index: 10010;
-            pointer-events: none;
-        }
-
-        .site-header .btn,
-        .site-header .btn-hamburger {
-            pointer-events: auto;
-        }
-
-        /* サイドメニュー */
-        .side-menu {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 280px;
-            height: 100vh;
-            background: linear-gradient(180deg, #164f2b, #0f3a1e);
-            color: #fff;
-            padding: 70px 18px;
-            box-shadow: -8px 0 24px rgba(0, 0, 0, 0.5);
-            transition: right .32s ease;
-            z-index: 10005;
-        }
-
-        .side-menu.open {
-            right: 0;
-        }
-
-        .side-menu ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .side-menu .nav-link {
-            display: block;
-            padding: 12px 14px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.04);
-            color: #fff;
-            text-decoration: none;
-            font-weight: 700;
-        }
-
-        /* オーバーレイ */
-        .menu-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            opacity: 0;
-            transition: opacity .24s;
-            z-index: 10000;
-            pointer-events: none;
-        }
-
-        .menu-overlay.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        /* ログインボタン用：ID/PWカードの中央下に配置 */
-        .login-btn-container {
-            flex-basis: 100%;
-            display: flex;
-            justify-content: center;
-            margin-top: 12px;
-        }
-
-        /* 小画面調整 */
-        @media (max-width: 480px) {
-            .btn {
-                padding: 8px 12px;
-                font-size: 14px;
-                border-radius: 10px;
-                min-width: 130px;
-            }
-
-            .btn-back {
-                padding: 5px 8px;
-                font-size: 13px;
-            }
-
-            .side-menu {
-                width: 220px;
-                right: -240px;
-            }
-
-            .site-header {
-                top: 8px;
-                padding: 0 10px;
-            }
-        }
-    
-/* ===== 共通UI（戻る・ハンバーガー統一） ===== */
-:root{
-  --ui-bg: rgba(0,0,0,0.35);
-  --ui-bd: rgba(255,255,255,0.14);
-  --ui-tx: #fff;
-  --ui-muted: rgba(255,255,255,0.78);
-}
-.site-header{
-  position: fixed;
-  left: 0; right: 0; top: 12px;
-  z-index: 9999;
-  padding: 0 16px;
-  pointer-events: none;
-}
-.site-header .header-inner{
-  max-width: 980px;
-  margin: 0 auto;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: var(--ui-bg);
-  border: 1px solid var(--ui-bd);
-  backdrop-filter: blur(6px);
-  pointer-events: auto;
-}
-.header-title{
-  flex: 1;
-  text-align:center;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  color: var(--ui-tx);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.ui-btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(255,255,255,0.14);
-  color: var(--ui-tx);
-  font-weight: 800;
-  cursor: pointer;
-  user-select:none;
-  -webkit-tap-highlight-color: transparent;
-  box-shadow: 0 6px 0 rgba(0,0,0,0.25);
-}
-.ui-btn:active{ transform: translateY(1px); }
-.ui-btn.back{ background:#111; border-color: rgba(255,255,255,0.10); box-shadow: 0 6px 0 rgba(0,0,0,0.45); }
-.ui-btn.menu{ width: 44px; padding: 10px 0; }
-
-/* bodyの上に余白を作る（display:flexでも崩れにくい） */
-body{ padding-top: 92px !important; }
-
-/* Drawer */
-.menu-backdrop{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .18s ease;
-  z-index: 9998;
-}
-.menu-drawer{
-  position: fixed;
-  top: 12px;
-  right: 16px;
-  width: min(340px, calc(100vw - 32px));
-  max-height: calc(100vh - 24px);
-  overflow:auto;
-  transform: translateY(-6px) scale(0.98);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .18s ease, transform .18s ease;
-  z-index: 10000;
-  border-radius: 16px;
-  background: rgba(0,0,0,0.78);
-  border: 1px solid rgba(255,255,255,0.14);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
-}
-.menu-drawer.open{ opacity:1; pointer-events:auto; transform: translateY(0) scale(1); }
-.menu-backdrop.open{ opacity:1; pointer-events:auto; }
-.menu-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 10px;
-  padding: 14px 14px 10px;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
-}
-.menu-head .menu-title{ font-weight: 900; letter-spacing: .06em; color: var(--ui-tx); }
-.menu-list{ padding: 10px; display:flex; flex-direction:column; gap: 8px; }
-.menu-link{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 10px;
-  padding: 12px 12px;
-  border-radius: 12px;
-  text-decoration:none;
-  color: var(--ui-tx);
-  background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(255,255,255,0.14);
-}
-.menu-link small{ color: var(--ui-muted); font-weight: 700; }
-.menu-link:active{ transform: translateY(1px); }
-
-</style>
+    @media(max-width:900px){
+      .cards-row{ gap:18px; flex-wrap:wrap; justify-content:center; }
+      .card{ width:160px; }
+    }
+  </style>
 </head>
 
 <body>
 
-    <?php // 必要ならここでヘッダ共通化の include を入れる ?>
-    <header class="site-header">
-        <!-- テキストを「戻る」に変更 -->
-        <button class="btn btn-back" onclick="location.href='Stert_Window.php'">◀ 戻る</button>
+  <!-- 上部UI -->
+  <header class="top-ui">
+    <button class="ui-back" type="button" onclick="goBackUnified()">
+      <span>◀</span><span>戻る</span>
+    </button>
 
-        <button class="btn-hamburger" id="menuToggle" aria-label="menu" onclick="toggleMenu()">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </button>
-    </header>
+    <button class="ui-menu" type="button" aria-label="menu" onclick="toggleMenu()">
+      <span class="ui-burger" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+  </header>
 
-    <nav class="side-menu" id="sideMenu" aria-hidden="true">
-        <ul>
-            <li><a class="nav-link" href="Stert_Window.php">Start</a></li>
-            <li><a class="nav-link" href="Login.php">Login</a></li>
-            <li><a class="nav-link" href="GameChange.php">Games</a></li>
-            <li><a class="nav-link" href="ranking.php">Ranking</a></li>
-            <li><a class="nav-link" href="New_User.php">New User</a></li>
-        </ul>
-    </nav>
-    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+  <div class="menu-overlay" id="menuOverlay2" onclick="closeMenu()"></div>
+  <nav class="menu-panel" id="menuPanel2" aria-hidden="true">
+  <a href="Stert_Window.php">Start</a>
+  <a href="Login.php">Login</a>
+  <a href="GameChange.php">Games</a>
+  <a href="ranking.php">Ranking</a>
+  <a href="New_User.php">New User</a>
+</nav>
 
-    <div class="table-area">
 
-        <!-- 上段：新規・ゲスト -->
-        <div class="cards-row">
+  <?php if ($error_message !== ""): ?>
+    <div class="error-message"><?php echo htmlspecialchars($error_message); ?></div>
+  <?php endif; ?>
 
-            <!-- 新規ユーザー → New_User.php -->
-            <div class="card-wrapper">
-                <div class="card" onclick="location.href='New_User.php'">
-                    <img src="https://deckofcardsapi.com/static/img/back.png" alt="back card">
-                </div>
-                <button class="btn btn-secondary" type="button" onclick="location.href='New_User.php'">新規ユーザー</button>
-            </div>
+  <div class="table-area">
+    <form method="POST" action="">
+      <div class="cards-row">
 
-            <!-- ゲストログイン → GameChange.php -->
-            <div class="card-wrapper">
-                <div class="card" onclick="location.href='GameChange.php'">
-                    <img src="https://deckofcardsapi.com/static/img/X1.png" alt="joker card">
-                </div>
-                <button class="btn btn-secondary" type="button" onclick="location.href='GameChange.php'">ゲストユーザー</button>
-            </div>
+        <div class="card-wrapper">
+          <div class="card" onclick="location.href='New_User.php'">
+            <img src="https://deckofcardsapi.com/static/img/back.png" alt="back card">
+          </div>
+          <button class="btn btn-secondary" type="button" onclick="location.href='New_User.php'">新規ユーザー</button>
         </div>
 
-        <!-- 下段：通常ログイン（user_id / password を auth.php へ POST） -->
-        <form id="loginForm" action="auth.php" method="post">
-            <div class="cards-row cards-row-login">
+        <div class="card-wrapper">
+          <div class="card" onclick="location.href='GameChange.php'">
+            <img src="https://deckofcardsapi.com/static/img/X1.png" alt="joker card">
+          </div>
+          <button class="btn btn-secondary" type="button" onclick="location.href='GameChange.php'">ゲストユーザー</button>
+        </div>
 
-                <!-- user_id -->
-                <div class="card-wrapper">
-                    <div class="card">
-                        <img src="img/AD.png" alt="AD">
-                        <div class="card-inner">
-                            <div class="field-label">user_id</div>
-                            <input class="field-input" type="text" id="userid" name="user_id" required>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- password -->
-                <div class="card-wrapper">
-                    <div class="card">
-                        <img src="img/2C.png" alt="2C">
-                        <div class="card-inner">
-                            <div class="field-label">password</div>
-                            <input class="field-input" type="password" id="password" name="password" required>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ID / PW カードの中央下にログインボタン -->
-                <div class="login-btn-container">
-                    <button class="btn" type="submit">ログイン</button>
-                </div>
-
+        <div class="card-wrapper">
+          <div class="card">
+            <img src="img/AD.png" alt="AD">
+            <div class="card-inner">
+              <div class="field-label">ユーザー</div>
+              <input class="field-input" type="text" id="userid" name="user_id">
             </div>
-        </form>
+          </div>
+        </div>
 
-    </div>
+        <div class="card-wrapper">
+          <div class="card">
+            <img src="img/2C.png" alt="2C">
+            <div class="card-inner">
+              <div class="field-label">パスワード</div>
+              <input class="field-input" type="password" id="password" name="password">
+            </div>
+          </div>
+        </div>
 
-    <script>
-        function toggleMenu() {
-            const m = document.getElementById('sideMenu');
-            const o = document.getElementById('menuOverlay');
-            const open = m.classList.toggle('open');
-            o.classList.toggle('show', open);
-            m.setAttribute('aria-hidden', !open);
-        }
+      </div>
 
-        function closeMenu() {
-            document.getElementById('sideMenu').classList.remove('open');
-            document.getElementById('menuOverlay').classList.remove('show');
-            document.getElementById('sideMenu').setAttribute('aria-hidden', 'true');
-        }
+      <button class="btn" type="submit">ログイン</button>
+    </form>
+  </div>
 
-    </script>
+  <script>
+    function goBackUnified(){
+      if (window.history.length <= 1) { location.href = 'Stert_Window.php'; return; }
+      window.history.back();
+    }
+
+    function toggleMenu(){
+      const p = document.getElementById("menuPanel2");
+      const o = document.getElementById("menuOverlay2");
+      const open = !p.classList.contains("open");
+      p.classList.toggle("open", open);
+      o.classList.toggle("open", open);
+      p.setAttribute("aria-hidden", String(!open));
+    }
+    function closeMenu(){
+      document.getElementById("menuPanel2").classList.remove("open");
+      document.getElementById("menuOverlay2").classList.remove("open");
+      document.getElementById("menuPanel2").setAttribute("aria-hidden","true");
+    }
+    document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeMenu(); });
+  </script>
+
 </body>
 </html>
