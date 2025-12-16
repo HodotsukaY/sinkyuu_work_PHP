@@ -6,7 +6,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        .return_btn {
+        
+/* ===== 共通レイアウト（全ページ統一） ===== */
+:root{
+  --bg1:#277b3c;
+  --bg2:#16602c;
+  --bg3:#0e3f1d;
+  --panel: rgba(255,255,255,0.10);
+  --panel2: rgba(0,0,0,0.25);
+  --text:#ffffff;
+  --muted: rgba(255,255,255,0.75);
+  --accent:#f4b034;
+  --radius:16px;
+}
+*{ box-sizing:border-box; }
+html,body{
+            margin: 0;
+            padding: 0;
+  height:100%; }
+body{
+  margin:0;
+  font-family: "Segoe UI","Noto Sans JP",sans-serif;
+  color:var(--text);
+  background: radial-gradient(circle at 20% 20%, var(--bg1) 0, var(--bg2) 55%, var(--bg3) 100%);
+  padding: 92px 16px 24px; /* 固定ヘッダ分の余白 */
+}
+.page{
+  max-width: 980px;
+  margin: 0 auto;
+}
+.panel{
+  background: var(--panel);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: var(--radius);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+  padding: 18px;
+}
+h1,h2,h3{ margin: 0 0 12px; }
+.small{ color: var(--muted); font-size: 0.95rem; }
+
+/* 共通ヘッダ */
+.site-header{
+  position: fixed;
+  left: 0; right: 0; top: 12px;
+  z-index: 999;
+  padding: 0 16px;
+}
+.site-header .header-inner{
+  max-width: 980px;
+  margin: 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.14);
+  backdrop-filter: blur(6px);
+}
+.header-title{
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-align:center;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration:none;
+  user-select:none;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:active{ transform: translateY(1px); }
+.btn-primary{ background: var(--accent); color:#111; box-shadow: 0 6px 0 rgba(0,0,0,0.25); }
+.btn-secondary{ background: rgba(255,255,255,0.16); color: #fff; box-shadow: 0 6px 0 rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.18); }
+.btn-back{ background:#111; color:#fff; box-shadow: 0 6px 0 rgba(0,0,0,0.45); }
+
+.return_btn {
             background-color: black;
             color: aliceblue;
             border-radius: 30%;
